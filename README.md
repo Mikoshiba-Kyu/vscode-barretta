@@ -1,12 +1,14 @@
 # Barretta for Visual Studio Code
 
-<img src="docs/image/largeicon_750x256r.png" width="450px">
+<img src="https://github.com/Mikoshiba-Kyu/vscode-barretta/blob/main/docs/image/largeicon_750x256r.png?raw=true" width="450px">
 
 ## Barretta とは
 
 Barretta は ExcelVBA 開発者のための拡張機能です。
 
-`image`
+<img src="https://github.com/Mikoshiba-Kyu/vscode-barretta/blob/main/docs/image/commands.gif?raw=true">
+
+<img src="https://github.com/Mikoshiba-Kyu/vscode-barretta/blob/main/docs/image/launcher.gif?raw=true">
 
 Visual Stadio Code でのコード編集サポーターとして、  
 Excel との連携を各コマンドより行うことができます。
@@ -25,49 +27,70 @@ Excel との連携を各コマンドより行うことができます。
 
 1. `Barretta: Push` コマンドで更新後のモジュールを Excel ファイルにインポートします。
 
-## Requirements
+## コマンド
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Visual Stadio Code のコマンドパレット (`Ctrl + Shift P`) から実行できるコマンドは以下の通りです。
 
-## Extension Settings
+* **Barretta: Init** (Alt + Ctrl + N)
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+    対象のフォルダをBarrettaプロジェクトとして初期化し以下の構成を行います。 
+  
+  * `/barretta-core`
 
-For example:
+  * `/code-modules`
 
-This extension contributes the following settings:
+  * `/excel_file`
 
-* `Barretta.HotReload`: **code_module** のファイルが更新された場合に自動的に `barretta: Push` を行います
-* `myExtension.thing`: set to `blah` to do something
+  * `.gitignore`
 
-## Known Issues
+  * `barretta.code-workspace`
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+  * `barretta-launcher.json`
 
-## Release Notes
+* **Barretta: Push** (Alt + Ctrl + I)
 
-Users appreciate release notes as you update your extension.
+    `code_modules` 内のVBAモジュールファイルを `excel_file` 内のExcelファイルにインポートします。
 
-### 1.0.0
+* **Barretta: Pull** (Alt + Ctrl + E)
 
------------------------------------------------------------------------------------------------------------
-## Following extension guidelines
+    `excel_file` 内のExcelファイルから、VBAモジュールファイルを `code_modules` にエクスポートします。
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+* **Barretta: Open** (Alt + Ctrl + O)
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+    `excel_file` 内のExcelファイルを開きます。
 
-## Working with Markdown
+## Barretta Launcher
 
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
+Visual Stadio Code のサイドパネルに **BARRETTA-LAUNCHER** が表示されます。 
+ここからは各種コマンドの実行や、`Macro Runner`を利用できます。
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
+Macro Runner からは`barretta-launcher.json`で定義した Excelファイル内のマクロを実行できます。
 
-### For more information
+### 使用例
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+1. Barretta: Init 実行時に作成される`barretta-launcher.json`に、3つのサンプルが定義されていることを確認します。
+1. `excel_file`に任意のxlsmファイルを配置し、Workbookモジュールに以下のコードを貼り付けて保存します。
 
-**Enjoy!**
+    ``` vb
+    Option Explicit
+
+    Sub SampleMacro1()
+        MsgBox "Your first macro will be conglutinated."
+    End Sub
+
+    Sub SampleMacro2(ByVal str1 As String, ByVal str2 As String, ByVal str3 As String)
+        MsgBox str1 & str2 & str3
+    End Sub
+
+    Sub SampleMacro3(ByVal num1 As Long, ByVal num2 As Long)
+        MsgBox num1 + num2
+    End Sub
+    ```
+
+1. Macro-Runnnerの Run ボタンからマクロを実行します。
+
+### 今後の予定
+
+* IntelliSense関連、LinterやFormatter、VBA編集のための言語機能の強化
+* HotReloadを始めとした、各種オプションの拡充
+* Wordなど、他ファイルへの対応
