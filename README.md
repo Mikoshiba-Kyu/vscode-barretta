@@ -1,6 +1,6 @@
 # Barretta for Visual Studio Code
 
-<img src="https://github.com/Mikoshiba-Kyu/vscode-barretta/blob/main/docs/image/largeicon_750x256r.png?raw=true" width="450px">
+<img src="https://github.com/Mikoshiba-Kyu/vscode-barretta/blob/main/docs/image/largeicon_750x256.png?raw=true" width="450px">
 
 ## Barretta とは
 
