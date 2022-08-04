@@ -10,8 +10,8 @@ Barretta は ExcelVBA 開発者のための拡張機能です。
 
 <img src="https://github.com/Mikoshiba-Kyu/vscode-barretta/blob/main/docs/image/launcher.gif?raw=true">
 
-Visual Stadio Code でのコード編集サポーターとして、Excelファイルとの連携を各コマンドより行うことができます。
-GoogleAppsScriptにおける`clasp`(留め金) と VBAにおける `barretta`(髪留め) となります。
+Visual Stadio Code でのコード編集サポーターとして、Excelファイルとの連携を各コマンドより行うことができます。 
+GoogleAppsScriptにおける **clasp**(留め金) と ExcelVBAにおける **barretta**(髪留め) となります。
 
 ## クイックスタート
 
