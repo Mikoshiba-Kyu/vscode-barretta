@@ -1,0 +1,57 @@
+button {
+  padding: 0.2rem;
+  width: 4.0rem;
+  height: 1.5rem;
+  font-size: 1.0rem;
+  margin: 0.6rem 1.0rem 1.4rem 0;
+}
+
+.short-cut {
+  white-space: nowrap;
+}
+
+.macro-header {
+  display: flex;
+  white-space: nowrap;
+}
+
+.macro-header > .run-button {
+  padding: 0.2rem;
+  width: 4.0rem;
+  height: 1.5rem;
+  font-size: 1.0rem;
+  margin: auto 0.8rem auto 0;
+}
+
+.macro-header > h2 {
+  margin: auto, 0, auto, 0;
+}
+
+.macro-params {
+  margin: 0.6rem 0 0.6rem 0;
+}
+
+.label {
+  margin-right: 0.8rem;
+}
+
+.macro-method {
+  display: flex;
+  white-space: nowrap;
+}
+
+.macro-args {
+  display: flex;
+  white-space: nowrap;
+}
+
+hr {
+  height: 1px;
+  background-color: #444444;
+  border: none;
+  margin: 2.4rem 0 0.8rem 0;
+}
+
+h3 {
+  font-weight: bold;
+}

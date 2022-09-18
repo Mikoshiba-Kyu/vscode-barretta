@@ -1,0 +1,152 @@
+{
+  "name": "vscode-barretta",
+  "displayName": "Barretta",
+  "description": "Assistant Extension for writing Excel VBA in VSCode.",
+  "publisher": "Mikoshiba-Kyu",
+  "author": {
+    "name": "Mikoshiba-Kyu"
+  },
+  "version": "1.0.1",
+  "engines": {
+    "vscode": "^1.68.0"
+  },
+  "categories": [
+    "Programming Languages" ,"Other"
+  ],
+  "icon": "icon/icon_128x128.png",
+  "license": "SEE LICENSE IN license.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mikoshiba-Kyu/vscode-barretta"
+  },
+  "capabilities": {
+    "virtualWorkspaces": false
+  },
+  "activationEvents": [
+    "onCommand:vscode-barretta.init",
+    "onCommand:vscode-barretta.push",
+    "onCommand:vscode-barretta.pull",
+    "onCommand:vscode-barretta.open",
+    "workspaceContains:barretta-core"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "configuration":[
+      {
+        "title": "Barretta",
+        "properties": {
+          "barretta.hotReload":{
+            "type": "boolean",
+            "description": "Code_Modulesのファイル更新時に自動的にPushします。",
+            "default": true
+          },
+          "push.ignoreDocuments":{
+            "type": "boolean",
+            "description": "ブックやシートなどのドキュメントモジュールを除外します。 ※This version does not work yet.",
+            "default": true
+          },
+          "pull.ignoreDocuments":{
+            "type": "boolean",
+            "description": "ブックやシートなどのドキュメントモジュールを除外します。",
+            "default": true
+          },
+          "pull.encodingToUtf8":{
+            "type": "boolean",
+            "description": "テキストファイルをUTF-8でExportします。",
+            "default": true
+          },
+          "vbaLint.enable":{
+            "type": "boolean",
+            "description": "VBALintを有効化します。 ※This version does not work yet.",
+            "default": true
+          },
+          "vbaLint.processOnSave":{
+            "type": "boolean",
+            "description": "コードファイルの保存時にVBALintを実行します。 ※This version does not work yet.",
+            "default": false
+          }
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "vscode-barretta.init",
+        "title": "Barretta: Init"
+      },
+      {
+        "command": "vscode-barretta.push",
+        "title": "Barretta: Push"
+      },
+      {
+        "command": "vscode-barretta.pull",
+        "title": "Barretta: Pull"
+      },
+      {
+        "command": "vscode-barretta.open",
+        "title": "Barretta: Open"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "vscode-barretta.init",
+        "key": "ctrl+alt+n"
+      },
+      {
+        "command": "vscode-barretta.push",
+        "key": "ctrl+alt+i"
+      },
+      {
+        "command": "vscode-barretta.pull",
+        "key": "ctrl+alt+e"
+      },
+      {
+        "command": "vscode-barretta.open",
+        "key": "ctrl+alt+o"
+      }
+    ],
+    "views": {
+			"explorer": [
+				{
+					"type": "webview",
+					"id": "vscode-barretta.launcher",
+					"name": "Barretta-Launcher"
+				}
+			]
+    }
+  
+  
+  },
+  
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.68.0",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "@vscode/test-electron": "^2.1.3",
+    "eslint": "^8.16.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "ts-loader": "^9.3.0",
+    "typescript": "^4.7.2",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "child-process": "^1.0.2",
+    "iconv-lite": "^0.6.3",
+    "util": "^0.12.4"
+  }
+}

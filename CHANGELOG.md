@@ -1,9 +1,15 @@
 # Change Log
 
-All notable changes to the "vscode-barretta" extension will be documented in this file.
+## 2022/09/18
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+**ver 1.0.1**
 
-## [Unreleased]
+- [Change] Extension option "hotReload" now works.
+- [Fix] Fixed problem with Barretta not working correctly depending on PowerShell execution permissions.
+
+
+## 2022/08/04
+
+**ver 1.0.0**
 
 - Initial release
