@@ -89,9 +89,8 @@ Macro Runner からは`barretta-launcher.json`で定義した Excelファイル�
 
 1. Macro-Runnnerの Run ボタンからマクロを実行します。
 
-### 今後の予定
+### VBA用LSPの開発について
 
-* IntelliSense関連、LinterやFormatter、VBA編集のための言語機能の強化
-* HotReloadを始めとした、各種オプションの拡充
-* Wordなど、他ファイルへの対応
-* ソースファイルの公開
+VSCodeで使用できるVBA用LSPの開発が可能な方、ご協力いただけると有り難いです。
+
+If you are able to develop an LSP for VBA that can be used with VSCode, we would appreciate your help.
