@@ -2,6 +2,7 @@ import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as iconv from 'iconv-lite'
+import * as encoding from 'encoding-japanese'
 import * as gen from './generator'
 import { setRootPath } from './lib_vscode_api'
 import { preCheckCallMacro, preCheckInit, preCheckOpen, preCheckPull, preCheckPush } from './api_precheck'
@@ -133,17 +134,17 @@ export const pushExcel: PushExcel = async () => {
         console.log(`Barretta: File Copied to dist. : ${file}`)
       })
 
-      // dist のファイルをSJISにする (frxファイルを除く)
-      /*
+      // dist のファイルで UTF-8 のものを SJIS に変換する (frxファイルを除く)
       fs.readdirSync(distPath).map(file => {
         if (path.extname(file) !== '.frx') {
           const txtData: Buffer = fs.readFileSync(path.join(distPath, file))
-          const buf: Buffer = iconv.encode(String(txtData), 'CP932')
-          fs.writeFileSync(path.join(distPath, file), buf)
-          console.log(`Barretta: ${file} encoding to Shift-JIS.`)
+          if (encoding.detect(txtData) === 'UTF8') {
+            const buf: Buffer = iconv.encode(String(txtData), 'CP932')
+            fs.writeFileSync(path.join(distPath, file), buf)
+            console.log(`Barretta: ${file} encoding to Shift-JIS.`)
+          }
         }
       })
-      */
 
       // Generate push_modules.ps1
       const genParams = {
