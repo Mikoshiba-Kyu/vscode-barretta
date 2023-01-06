@@ -11,7 +11,8 @@
     "vscode": "^1.68.0"
   },
   "categories": [
-    "Programming Languages" ,"Other"
+    "Programming Languages",
+    "Other"
   ],
   "icon": "icon/icon_128x128.png",
   "license": "SEE LICENSE IN license.md",
@@ -31,36 +32,36 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "configuration":[
+    "configuration": [
       {
         "title": "Barretta",
         "properties": {
-          "barretta.hotReload":{
+          "barretta.hotReload": {
             "type": "boolean",
             "description": "Code_Modulesのファイル更新時に自動的にPushします。",
             "default": true
           },
-          "push.ignoreDocuments":{
+          "push.ignoreDocuments": {
             "type": "boolean",
             "description": "ブックやシートなどのドキュメントモジュールを除外します。 ※This version does not work yet.",
             "default": true
           },
-          "pull.ignoreDocuments":{
+          "pull.ignoreDocuments": {
             "type": "boolean",
             "description": "ブックやシートなどのドキュメントモジュールを除外します。",
             "default": true
           },
-          "pull.encodingToUtf8":{
+          "pull.encodingToUtf8": {
             "type": "boolean",
             "description": "テキストファイルをUTF-8でExportします。",
             "default": true
           },
-          "vbaLint.enable":{
+          "vbaLint.enable": {
             "type": "boolean",
             "description": "VBALintを有効化します。 ※This version does not work yet.",
             "default": true
           },
-          "vbaLint.processOnSave":{
+          "vbaLint.processOnSave": {
             "type": "boolean",
             "description": "コードファイルの保存時にVBALintを実行します。 ※This version does not work yet.",
             "default": false
@@ -105,18 +106,15 @@
       }
     ],
     "views": {
-			"explorer": [
-				{
-					"type": "webview",
-					"id": "vscode-barretta.launcher",
-					"name": "Barretta-Launcher"
-				}
-			]
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "vscode-barretta.launcher",
+          "name": "Barretta-Launcher"
+        }
+      ]
     }
-  
-  
   },
-  
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
@@ -146,6 +144,7 @@
   },
   "dependencies": {
     "child-process": "^1.0.2",
+    "encoding-japanese": "^2.0.0",
     "iconv-lite": "^0.6.3",
     "util": "^0.12.4"
   }

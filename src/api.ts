@@ -134,14 +134,16 @@ export const pushExcel: PushExcel = async () => {
       })
 
       // dist のファイルをSJISにする (frxファイルを除く)
+      /*
       fs.readdirSync(distPath).map(file => {
         if (path.extname(file) !== '.frx') {
           const txtData: Buffer = fs.readFileSync(path.join(distPath, file))
-          const buf: Buffer = iconv.encode(String(txtData), 'Shift_JIS')
+          const buf: Buffer = iconv.encode(String(txtData), 'CP932')
           fs.writeFileSync(path.join(distPath, file), buf)
-          console.log(`Barretta: ${file} encoding to Shift-JS.`)
+          console.log(`Barretta: ${file} encoding to Shift-JIS.`)
         }
       })
+      */
 
       // Generate push_modules.ps1
       const genParams = {
@@ -222,7 +224,7 @@ export const pullExcel: PullExcel = async () => {
           fs.readdirSync(modulePath).map(file => {
             if (path.extname(file) !== '.frx') {
               const txtData: Buffer = fs.readFileSync(path.join(modulePath, file))
-              const buf: string = iconv.decode(txtData, 'shift_JIS')
+              const buf: string = iconv.decode(txtData, 'Shift-JIS')
               fs.writeFileSync(path.join(modulePath, file), buf)
               console.log(`Barretta: ${file} encoding to UTF-8.`)
             }
