@@ -2,6 +2,13 @@
 
 ## 2022/09/18
 
+**ver 1.0.2**
+
+- [Fix] Fixed a garbled problem when pushing Shift-JIS files. (issue #2)
+- [Fix] Fixed a problem with Excel files that did not work if their names contained Japanese characters. (issue #3)
+
+## 2022/09/18
+
 **ver 1.0.1**
 
 - [Change] Extension option "hotReload" now works.
