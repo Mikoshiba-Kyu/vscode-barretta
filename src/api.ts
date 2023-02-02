@@ -154,6 +154,12 @@ export const pushExcel: PushExcel = async () => {
       fs.appendFileSync(ps1FilePath, gen.generatePushPs1(genParams))
       console.log('Barretta: push_modules.ps1 Created.')
 
+      // ps1ファイルをShift-JISに変換
+      const txtData: Buffer = fs.readFileSync(ps1FilePath)
+      const buf: Buffer = iconv.encode(String(txtData), 'CP932')
+      fs.writeFileSync(ps1FilePath, buf)
+      console.log(`Barretta: push_modules.ps1 encoding to Shift-JIS.`)
+
       // push_modules.ps1 を実行する
       const ps1Params: Ps1Params = {
         execType: "-File",
@@ -210,6 +216,12 @@ export const pullExcel: PullExcel = async () => {
       }
       fs.appendFileSync(ps1FilePath, gen.generatePullPs1(genParams))
       console.log('Barretta: pull_modules.ps1 Created.')
+
+      // ps1ファイルをShift-JISに変換
+      const txtData: Buffer = fs.readFileSync(ps1FilePath)
+      const buf: Buffer = iconv.encode(String(txtData), 'CP932')
+      fs.writeFileSync(ps1FilePath, buf)
+      console.log(`Barretta: pull_modules.ps1 encoding to Shift-JIS.`)
 
       // pull_modules.ps1 を実行する
       const ps1Params: Ps1Params = {
@@ -280,6 +292,13 @@ export const openBook: OpenBook = async () => {
       fs.appendFileSync(ps1FilePath, gen.generateOpenBookPs1(genParams))
       console.log('Barretta: open_excelbook.ps1 Created.')
 
+      // ps1ファイルをShift-JISに変換
+      const txtData: Buffer = fs.readFileSync(ps1FilePath)
+
+      const buf: Buffer = iconv.encode(String(txtData), 'CP932')
+      fs.writeFileSync(ps1FilePath, buf)
+      console.log(`Barretta: open_excelbook.ps1 encoding to Shift-JIS.`)
+
       // open_excelbook.ps1 を実行する
       const ps1Params: Ps1Params = {
         execType: "-File",
@@ -333,6 +352,12 @@ export const callMacro: CallMacro = async (callMethod, methodParams?) => {
     progress.report({ message: 'Working....' })
     try {
       const ps1FilePath = path.join(rootPath, 'barretta-core/scripts/run_macro.ps1')
+
+      // ps1ファイルをShift-JISに変換
+      const txtData: Buffer = fs.readFileSync(ps1FilePath)
+      const buf: Buffer = iconv.encode(String(txtData), 'CP932')
+      fs.writeFileSync(ps1FilePath, buf)
+      console.log(`Barretta: run_macro.ps1 encoding to Shift-JIS.`)
 
       // pull_modules.ps1 を実行する
       const ps1Params: Ps1Params = {
