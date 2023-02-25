@@ -31,7 +31,7 @@ export const preCheckInit: PreCheckInit = (rootPath) => {
     console.log(`Barretta: The target folder has already been initialized.`)
     return false
   }
-  
+
   return true
 }
 
@@ -56,7 +56,7 @@ export const preCheckPush: PreCheckPush = (rootPath) => {
 
   // 単一Excelファイル存在確認
   const fileList = fs.readdirSync(excelFolderPath)
-  const excelFileList =  fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$)/g))
+  const excelFileList = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
 
   if (excelFileList.length === 0) {
     vscode.window.showErrorMessage(`Barretta: Excelファイルが格納されていません。`)
@@ -110,7 +110,7 @@ export const preCheckPull: PreCheckPull = (rootPath) => {
 
   // 単一Excelファイル存在確認
   const fileList = fs.readdirSync(excelFolderPath)
-  const excelFileList =  fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$)/g))
+  const excelFileList = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
 
   if (excelFileList.length === 0) {
     vscode.window.showErrorMessage(`Barretta: Excelファイルが格納されていません。`)
@@ -164,7 +164,7 @@ export const preCheckOpen: PreCheckOpen = (rootPath) => {
 
   // 単一Excelファイル存在確認
   const fileList = fs.readdirSync(excelFolderPath)
-  const excelFileList =  fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$)/g))
+  const excelFileList = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
 
   if (excelFileList.length === 0) {
     vscode.window.showErrorMessage(`Barretta: Excelファイルが格納されていません。`)
@@ -210,7 +210,7 @@ export const preCheckCallMacro: PreCheckCallMacro = (rootPath) => {
 
   // 単一Excelファイル存在確認
   const fileList = fs.readdirSync(excelFolderPath)
-  const excelFileList =  fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$)/g))
+  const excelFileList = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
 
   if (excelFileList.length === 0) {
     vscode.window.showErrorMessage(`Barretta: Excelファイルが格納されていません。`)
