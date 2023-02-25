@@ -106,7 +106,7 @@ export const pushExcel: PushExcel = async () => {
   }
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, 'excel_file'))
-  const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$)/g))
+  const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
   const fileName: string = excelFileList[0]
 
   vscode.window.withProgress({location: vscode.ProgressLocation.Notification, title: 'Barretta: Push'}, async progress => {
@@ -196,7 +196,7 @@ export const pullExcel: PullExcel = async () => {
   }
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, 'excel_file'))
-  const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$)/g))
+  const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
   const fileName: string = excelFileList[0]
 
   vscode.window.withProgress({location: vscode.ProgressLocation.Notification, title: 'Barretta: Pull'}, async progress => {
@@ -275,7 +275,7 @@ export const openBook: OpenBook = async () => {
   }
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, 'excel_file'))
-  const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$)/g))
+  const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
   const fileName: string = excelFileList[0]
 
   vscode.window.withProgress({location: vscode.ProgressLocation.Notification, title: 'Barretta: Open'}, async progress => {
@@ -335,7 +335,7 @@ export const callMacro: CallMacro = async (callMethod, methodParams?) => {
   }
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, 'excel_file'))
-  const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$)/g))
+  const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
   const fileName: string = excelFileList[0]
 
   // Generate run_macro.ps1
