@@ -128,9 +128,9 @@
   },
   "devDependencies": {
     "@types/encoding-japanese": "^2.0.1",
-    "@types/glob": "^7.2.0",
-    "@types/mocha": "^9.1.1",
-    "@types/node": "16.x",
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^18.0.0",
     "@types/vscode": "^1.68.0",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
@@ -141,7 +141,7 @@
     "ts-loader": "^9.3.0",
     "typescript": "^4.7.2",
     "webpack": "^5.72.1",
-    "webpack-cli": "^4.9.2"
+    "webpack-cli": "^5.0.0"
   },
   "dependencies": {
     "child-process": "^1.0.2",

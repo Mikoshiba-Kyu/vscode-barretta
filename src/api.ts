@@ -14,11 +14,11 @@ type Initialize = {
 }
 
 type OpenBook = {
-  ():void
+  (): void
 }
 
 type CallMacro = {
-  (callMethod: string, methodParams?: (string | number | boolean)[] | undefined):void
+  (callMethod: string, methodParams?: (string | number | boolean)[] | undefined): void
 }
 
 type PushExcel = {
@@ -80,7 +80,7 @@ export const initialize: Initialize = async () => {
 
     fs.appendFileSync(path.join(rootPath, 'barretta-launcher.json'), gen.generateBarrettaLauncher())
     console.log('Barretta: CreateFile : barretta-launcher.json')
-    
+
     vscode.window.showInformationMessage('Barretta: フォルダの初期化が完了しました。')
     console.log(`Barretta: Complete initialize.`)
 
@@ -109,7 +109,7 @@ export const pushExcel: PushExcel = async () => {
   const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
   const fileName: string = excelFileList[0]
 
-  vscode.window.withProgress({location: vscode.ProgressLocation.Notification, title: 'Barretta: Push'}, async progress => {
+  vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: 'Barretta: Push' }, async progress => {
     progress.report({ message: 'Working....' })
 
     const ps1FilePath = path.join(rootPath, 'barretta-core/scripts/push_modules.ps1')
@@ -173,7 +173,12 @@ export const pushExcel: PushExcel = async () => {
         vscode.window.showErrorMessage(`Barretta: コードモジュールのImportが失敗しました。`)
         console.log(`Barretta: Failed pushExcel.`)
       }
-    } finally {
+    }
+    catch (e) {
+      console.error(`Barretta: unknown error has occured.`)
+      console.error(e)
+    }
+    finally {
       fs.unlinkSync(ps1FilePath)
       console.log(`Barretta: push_modules.ps1 deleted.`)
     }
@@ -199,9 +204,9 @@ export const pullExcel: PullExcel = async () => {
   const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
   const fileName: string = excelFileList[0]
 
-  vscode.window.withProgress({location: vscode.ProgressLocation.Notification, title: 'Barretta: Pull'}, async progress => {
+  vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: 'Barretta: Pull' }, async progress => {
     progress.report({ message: 'Working....' })
-    
+
     const ps1FilePath = path.join(rootPath, 'barretta-core/scripts/pull_modules.ps1')
 
     try {
@@ -252,7 +257,12 @@ export const pullExcel: PullExcel = async () => {
         console.log(`Barretta: Failed  pullExcel.`)
       }
 
-    } finally {
+    }
+    catch (e) {
+      console.error(`Barretta: unknown error has occured.`)
+      console.error(e)
+    }
+    finally {
       fs.unlinkSync(ps1FilePath)
       console.log(`Barretta: pull_modules.ps1 deleted.`)
     }
@@ -278,7 +288,7 @@ export const openBook: OpenBook = async () => {
   const excelFileList: string[] = fileList.filter(fileName => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g))
   const fileName: string = excelFileList[0]
 
-  vscode.window.withProgress({location: vscode.ProgressLocation.Notification, title: 'Barretta: Open'}, async progress => {
+  vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: 'Barretta: Open' }, async progress => {
     progress.report({ message: 'Working....' })
 
     const ps1FilePath = path.join(rootPath, 'barretta-core/scripts/open_excelbook.ps1')
@@ -312,7 +322,12 @@ export const openBook: OpenBook = async () => {
         vscode.window.showErrorMessage('Barretta: Excelブックを開けませんでした。')
         console.log(`Barretta: Failed openBook.`)
       }
-    } finally {
+    }
+    catch (e) {
+      console.error(`Barretta: unknown error has occured.`)
+      console.error(e)
+    }
+    finally {
       fs.unlinkSync(ps1FilePath)
       console.log(`Barretta: open_excelbook.ps1 deleted.`)
     }
@@ -348,7 +363,7 @@ export const callMacro: CallMacro = async (callMethod, methodParams?) => {
   fs.appendFileSync(path.join(rootPath, 'barretta-core/scripts/run_macro.ps1'), gen.generateRunMacroPs1(genParams))
   console.log('Barretta: run_macro.ps1 Created.')
 
-  vscode.window.withProgress({location: vscode.ProgressLocation.Notification, title: 'Barretta: LaunchMacro'}, async progress => {
+  vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: 'Barretta: LaunchMacro' }, async progress => {
     progress.report({ message: 'Working....' })
     try {
       const ps1FilePath = path.join(rootPath, 'barretta-core/scripts/run_macro.ps1')
@@ -373,7 +388,12 @@ export const callMacro: CallMacro = async (callMethod, methodParams?) => {
         console.log(`Barretta: run_macro.ps1 failed.`)
       }
 
-    } finally {
+    }
+    catch (e) {
+      console.error(`Barretta: unknown error has occured.`)
+      console.error(e)
+    }
+    finally {
       fs.unlinkSync(path.join(rootPath, 'barretta-core/scripts/run_macro.ps1'))
       console.log(`Barretta: run_macro.ps1 deleted.`)
     }
@@ -397,7 +417,7 @@ const runPs1: RunPS1 = async (ps1Params): Promise<boolean> => {
     error += chunk
   }
 
-  const exitCode = await new Promise( (resolve) => {
+  const exitCode = await new Promise((resolve) => {
     child.on('close', resolve)
   })
 
@@ -406,6 +426,6 @@ const runPs1: RunPS1 = async (ps1Params): Promise<boolean> => {
     console.log(`runPs1 : error-end ${result}`)
     throw new Error(result)
   }
-  
+
   return error === '' ? true : false
 }
