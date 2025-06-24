@@ -1,9 +1,9 @@
 button {
   padding: 0.2rem;
-  width: 4.0rem;
+  width: 4rem;
   height: 1.5rem;
-  font-size: 1.0rem;
-  margin: 0.6rem 1.0rem 1.4rem 0;
+  font-size: 1rem;
+  margin: 0.6rem 1rem 1.4rem 0;
 }
 
 .short-cut {
@@ -17,9 +17,9 @@ button {
 
 .macro-header > .run-button {
   padding: 0.2rem;
-  width: 4.0rem;
+  width: 4rem;
   height: 1.5rem;
-  font-size: 1.0rem;
+  font-size: 1rem;
   margin: auto 0.8rem auto 0;
 }
 

@@ -1,24 +1,17 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
-	"name": "vscode-barretta",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
-	"runArgs": ["--name", "vscode-barretta"],
-	"features": {
-		"ghcr.io/devcontainers/features/powershell:1": {}
-	},
+  "name": "vscode-barretta",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+  "runArgs": ["--name", "vscode-barretta"],
+  "features": {
+    "ghcr.io/devcontainers/features/powershell:1": {}
+  },
 
-	"customizations": {
+  "customizations": {
     "vscode": {
-      "extensions": [
-        "mhutchie.git-graph",
-        "Prisma.prisma",
-        "bradlc.vscode-tailwindcss",
-        "biomejs.biome",
-        "Gruntfuggly.todo-tree",
-        "mechatroner.rainbow-csv"
-      ],
+      "extensions": ["biomejs.biome"],
       "settings": {
         "npm.packageManager": "yarn"
       }

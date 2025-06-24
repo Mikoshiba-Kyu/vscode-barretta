@@ -127,6 +127,7 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.0.5",
     "@types/encoding-japanese": "^2.0.1",
     "@types/glob": "^8.0.0",
     "@types/mocha": "^10.0.0",
