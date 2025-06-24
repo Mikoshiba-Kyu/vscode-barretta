@@ -24,10 +24,6 @@
     "virtualWorkspaces": false
   },
   "activationEvents": [
-    "onCommand:vscode-barretta.init",
-    "onCommand:vscode-barretta.push",
-    "onCommand:vscode-barretta.pull",
-    "onCommand:vscode-barretta.open",
     "workspaceContains:barretta-core"
   ],
   "main": "./dist/extension.js",
