@@ -1,8 +1,5 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
   "name": "vscode-barretta",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
   "runArgs": ["--name", "vscode-barretta"],
   "features": {
@@ -13,6 +10,11 @@
     "vscode": {
       "extensions": ["biomejs.biome"],
       "settings": {
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports.biome": "explicit"
+        },
         "npm.packageManager": "yarn"
       }
     }
