@@ -6,6 +6,8 @@
     "ghcr.io/devcontainers/features/powershell:1": {}
   },
 
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libnss3 libatk-bridge2.0-0 libdrm2 libgtk-3-0 libgbm1 libasound2",
+
   "customizations": {
     "vscode": {
       "extensions": ["biomejs.biome"],
