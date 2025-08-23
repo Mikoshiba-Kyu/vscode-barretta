@@ -24,10 +24,6 @@
     "virtualWorkspaces": false
   },
   "activationEvents": [
-    "onCommand:vscode-barretta.init",
-    "onCommand:vscode-barretta.push",
-    "onCommand:vscode-barretta.pull",
-    "onCommand:vscode-barretta.open",
     "workspaceContains:barretta-core"
   ],
   "main": "./dist/extension.js",
@@ -116,26 +112,27 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run package",
+    "vscode:prepublish": "yarn package",
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
+    "pretest": "yarn compile-tests && yarn compile",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format --check .",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.0.5",
     "@types/encoding-japanese": "^2.0.1",
     "@types/glob": "^8.0.0",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.0.0",
     "@types/vscode": "^1.68.0",
-    "@typescript-eslint/eslint-plugin": "^5.27.0",
-    "@typescript-eslint/parser": "^5.27.0",
     "@vscode/test-electron": "^2.1.3",
-    "eslint": "^8.16.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
     "ts-loader": "^9.3.0",

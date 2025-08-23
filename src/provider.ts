@@ -1,161 +1,151 @@
 // https://github.com/microsoft/vscode-extension-samples/blob/main/webview-view-sample/package.json
 
-import * as vscode from 'vscode'
-import * as fs from 'fs'
-import * as path from 'path'
-import { pushExcel, callMacro, pullExcel, openBook } from './api'
-import { setRootPath } from './lib_vscode_api'
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as vscode from "vscode";
+import { callMacro, openBook, pullExcel, pushExcel } from "./api";
+import { setRootPath } from "./lib_vscode_api";
 
 type Macro = {
-		title: string,
-		call: string,
-		args: (string | number | boolean)[],
-		description: string
-}
+  title: string;
+  call: string;
+  args: (string | number | boolean)[];
+  description: string;
+};
 
 type LaunchJson = {
-	macros: Macro[]
-}
+  macros: Macro[];
+};
 
 export class BarrettaViewProvider implements vscode.WebviewViewProvider {
+  public static readonly viewType = "vscode-barretta.launcher";
 
-	public static readonly viewType = 'vscode-barretta.launcher'
+  private _view?: vscode.WebviewView;
 
-	private _view?: vscode.WebviewView
+  constructor(private readonly _extensionUri: vscode.Uri) {}
 
-	constructor(
-		private readonly _extensionUri: vscode.Uri,
-	) { }
+  public resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    _context: vscode.WebviewViewResolveContext,
+    _token: vscode.CancellationToken,
+  ) {
+    this._view = webviewView;
 
-	public resolveWebviewView(
-		webviewView: vscode.WebviewView,
-		context: vscode.WebviewViewResolveContext,
-		_token: vscode.CancellationToken,
-	) {
-		this._view = webviewView
+    webviewView.webview.options = {
+      // Allow scripts in the webview
+      enableScripts: true,
 
-		webviewView.webview.options = {
-			// Allow scripts in the webview
-			enableScripts: true,
+      localResourceRoots: [this._extensionUri],
+    };
 
-			localResourceRoots: [
-				this._extensionUri
-			]
-		}
+    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-		webviewView.webview.html = this._getHtmlForWebview(webviewView.webview)
+    webviewView.webview.onDidReceiveMessage((data) => {
+      switch (data.type) {
+        case "reload": {
+          (async () => {
+            if (this._view) {
+              this._view.show?.(true);
 
-		webviewView.webview.onDidReceiveMessage(data => {
-			switch (data.type) {
-				case 'reload':
-					{
-						(async () => {
-							if (this._view) {
-								this._view.show?.(true)
-	
-								const rootPath = await setRootPath()
-								if (rootPath === undefined) {
-									return
-								}
-	
-								const jsonPath = path.join(String(rootPath), `barretta-launcher.json`)
-								if (!fs.existsSync(jsonPath)) {
-									return
-								}
+              const rootPath = await setRootPath();
+              if (rootPath === undefined) {
+                return;
+              }
 
-								try {
-									const jsonText = fs.readFileSync(jsonPath).toString()
-									this._view.webview.postMessage({ type :'reloadLauncher', jsonText: jsonText	})
-									vscode.window.showInformationMessage('Barretta: MacroRunnerを更新しました。')
-									console.log(`Barretta: Complete reload macro runner.`)
-	
-								} catch {
-									this._view.webview.postMessage({ type :'reloadLauncher', jsonText: `Error : Check [barretta-launcher.json]`	})
-									vscode.window.showInformationMessage('Barretta: barretta-launcher.json に問題があります。')
-									console.log(`Barretta: Failed reload macro runner.`)
-								}
-							}
-						})()
-						break
-					}
+              const jsonPath = path.join(String(rootPath), `barretta-launcher.json`);
+              if (!fs.existsSync(jsonPath)) {
+                return;
+              }
 
-				case 'push':
-					{
-						pushExcel()
-						break
-					}
-				
-				case 'pull':
-					{
-						pullExcel()
-						break
-					}
+              try {
+                const jsonText = fs.readFileSync(jsonPath).toString();
+                this._view.webview.postMessage({ type: "reloadLauncher", jsonText: jsonText });
+                vscode.window.showInformationMessage("Barretta: MacroRunnerを更新しました。");
+                console.log(`Barretta: Complete reload macro runner.`);
+              } catch {
+                this._view.webview.postMessage({
+                  type: "reloadLauncher",
+                  jsonText: `Error : Check [barretta-launcher.json]`,
+                });
+                vscode.window.showInformationMessage("Barretta: barretta-launcher.json に問題があります。");
+                console.log(`Barretta: Failed reload macro runner.`);
+              }
+            }
+          })();
+          break;
+        }
 
-				case 'open':
-					{
-						openBook()
-						break
-					}
+        case "push": {
+          pushExcel();
+          break;
+        }
 
-				case 'runMacro':
-					{
-						let arrayArgs: (string | number | boolean)[] = []
-						if (data.args !== '') {
-							const tmp: string = data.args.replace(/"/g, '')
-							arrayArgs = tmp.split(', ')
-						}
+        case "pull": {
+          pullExcel();
+          break;
+        }
 
-						console.log(data.call)
-						console.log(JSON.stringify(arrayArgs))
-						callMacro(data.call, arrayArgs)
-						break
-					}
-			}
-		})
-	}
+        case "open": {
+          openBook();
+          break;
+        }
 
-	private _getHtmlForWebview(webview: vscode.Webview) {
+        case "runMacro": {
+          let arrayArgs: (string | number | boolean)[] = [];
+          if (data.args !== "") {
+            const tmp: string = data.args.replace(/"/g, "");
+            arrayArgs = tmp.split(", ");
+          }
 
-		// Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'))
+          console.log(data.call);
+          console.log(JSON.stringify(arrayArgs));
+          callMacro(data.call, arrayArgs);
+          break;
+        }
+      }
+    });
+  }
 
-		// Do the same for the stylesheet.
-		const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'))
-		const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'))
-		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'))
+  private _getHtmlForWebview(webview: vscode.Webview) {
+    // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
+    const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "main.js"));
 
-		// Use a nonce to only allow a specific script to be run.
-		const nonce = getNonce()
+    // Do the same for the stylesheet.
+    const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "reset.css"));
+    const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css"));
+    const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "main.css"));
 
-		// Import Launcher Data and Generate HTML.
-		const rootPath: string | undefined = setRootPathAsWebView()
+    // Use a nonce to only allow a specific script to be run.
+    const nonce = getNonce();
 
-		let macroList = `<div class="macro-list">
+    // Import Launcher Data and Generate HTML.
+    const rootPath: string | undefined = setRootPathAsWebView();
+
+    let macroList = `<div class="macro-list">
 											No Data.
-										</div>`
-		if (rootPath !== undefined) {
-			const jsonPath = path.join(String(rootPath), `barretta-launcher.json`)
+										</div>`;
+    if (rootPath !== undefined) {
+      const jsonPath = path.join(String(rootPath), `barretta-launcher.json`);
 
-			if (fs.existsSync(jsonPath)) {
-				try {
-				const jsonData: LaunchJson = JSON.parse(fs.readFileSync(jsonPath).toString())
+      if (fs.existsSync(jsonPath)) {
+        try {
+          const jsonData: LaunchJson = JSON.parse(fs.readFileSync(jsonPath).toString());
 
-				let tmp = ''
-				jsonData.macros.forEach((macro, index) => {
+          let tmp = "";
+          jsonData.macros.forEach((macro, index) => {
+            let fixArgs = "";
+            if (macro.args.length > 0) {
+              const stringArgFix = macro.args.map((arg) => {
+                if (typeof arg === "string") {
+                  return `"${arg}"`;
+                } else {
+                  return arg;
+                }
+              });
+              fixArgs = stringArgFix.join(", ");
+            }
 
-					let fixArgs = ''
-					if (macro.args.length > 0) {
-						const stringArgFix = macro.args.map((arg) => {
-							if (typeof arg === 'string') {
-								return `"${arg}"`
-							} else {
-								return arg
-							}
-						})
-						fixArgs = stringArgFix.join(', ')
-					}
-
-					const macroCard = `
+            const macroCard = `
 					<div id="macro-card${index}" class="macro-card">
 						<hr>
 						<div id="macro-header${index}" class="macro-header">
@@ -176,19 +166,18 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
 						${macro.description}
 						</div>
 					</div>
-					`
-					tmp = tmp + macroCard
-				})
+					`;
+            tmp = tmp + macroCard;
+          });
 
-				if (tmp !== '') macroList = tmp
+          if (tmp !== "") macroList = tmp;
+        } catch {
+          macroList = `Error : Check [barretta-launcher.json]`;
+        }
+      }
+    }
 
-				} catch {
-					macroList = `Error : Check [barretta-launcher.json]`
-				}
-			}
-		}
-
-		return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 		<html lang="en">
 		<head>
 			<meta charset="UTF-8">
@@ -223,40 +212,39 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
 			<script nonce="${nonce}" src="${scriptUri}"></script>
 		</body>
 		</html>`;
-	}
+  }
 }
 
 function getNonce() {
-	let text = ''
-	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-	for (let i = 0; i < 32; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length))
-	}
-	return text
+  let text = "";
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < 32; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }
 
 const setRootPathAsWebView = () => {
-	let rootPath
+  let rootPath: string | undefined;
 
   if (!vscode.window.activeTextEditor) {
     if (vscode.workspace.workspaceFolders === undefined) {
-      console.log(`Barretta: The target could not be identified because the folder was not opened.`)
-      return undefined
+      console.log(`Barretta: The target could not be identified because the folder was not opened.`);
+      return undefined;
     }
-    
-    return rootPath
 
+    return rootPath;
   } else {
-    const activeEditorPath: vscode.Uri = vscode.window.activeTextEditor.document.uri
+    const activeEditorPath: vscode.Uri = vscode.window.activeTextEditor.document.uri;
     if (vscode.workspace.getWorkspaceFolder(activeEditorPath) !== undefined) {
-      const rootWsFolder: vscode.WorkspaceFolder | undefined  = vscode.workspace.getWorkspaceFolder(activeEditorPath)
+      const rootWsFolder: vscode.WorkspaceFolder | undefined = vscode.workspace.getWorkspaceFolder(activeEditorPath);
 
-      rootPath = rootWsFolder && rootWsFolder.uri.path.replace(/^\//, '')
-      console.log(`Barretta: ${rootPath} was selected from the current active editors.`)
-      return rootPath
+      rootPath = rootWsFolder?.uri.path.replace(/^\//, "");
+      console.log(`Barretta: ${rootPath} was selected from the current active editors.`);
+      return rootPath;
     } else {
-      console.log(`Barretta: Failed to locate root folder.`)
-      return undefined
+      console.log(`Barretta: Failed to locate root folder.`);
+      return undefined;
     }
   }
-} 
+};

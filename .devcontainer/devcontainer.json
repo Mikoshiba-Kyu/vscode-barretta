@@ -1,0 +1,24 @@
+{
+  "name": "vscode-barretta",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+  "runArgs": ["--name", "vscode-barretta"],
+  "features": {
+    "ghcr.io/devcontainers/features/powershell:1": {}
+  },
+
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libnss3 libatk-bridge2.0-0 libdrm2 libgtk-3-0 libgbm1 libasound2",
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["biomejs.biome"],
+      "settings": {
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports.biome": "explicit"
+        },
+        "npm.packageManager": "yarn"
+      }
+    }
+  }
+}
