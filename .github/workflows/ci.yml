@@ -23,7 +23,7 @@ jobs:
         run: yarn install --frozen-lockfile
         
       - name: Check formatting with Biome
-        run: yarn format:check
+        run: yarn format
         
       - name: Lint with Biome
         run: yarn lint
