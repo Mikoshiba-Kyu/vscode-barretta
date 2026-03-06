@@ -82,16 +82,24 @@ export const pushExcel: PushExcel = async () => {
   console.log(`Barretta: Start pushExcel.`);
 
   const rootPath: string | undefined = await setRootPath();
-
   if (rootPath === undefined) {
     console.log(`Barretta: Exit pushExcel.`);
     return;
   }
-
   if (!preCheckPush(rootPath)) {
     console.log(`Barretta: Failed preCheckPush.`);
     return;
   }
+
+  // Read encoding setting (following encoding / decoding settings based on user settings --> encodingMap)
+  const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("barretta");
+  const vbaEncoding: string = config.get("vbaEncoding") || "Shift-JIS";
+  const encodingMap: Record<string, string> = {
+    "Shift-JIS": "CP932",
+    "GB2312": "GB2312",
+    "ANSI": "win1252"
+  };
+  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -107,7 +115,7 @@ export const pushExcel: PushExcel = async () => {
       const ps1FilePath = path.join(rootPath, "barretta-core/scripts/push_modules.ps1");
 
       try {
-        // dist フォルダがなければ再作成する。ある場合は中身を空にす�?
+        // dist フォルダがなければ再作成する。ある場合は中身を空にす�?
         const distPath: string = path.join(rootPath, "barretta-core/dist");
         if (!fs.existsSync(distPath)) {
           fs.mkdirSync(distPath);
@@ -119,21 +127,21 @@ export const pushExcel: PushExcel = async () => {
           });
         }
 
-        // code_modules 内のファイル�?dist にコピーする
+        // hot reload: Copy files in code_modules to dist on file saved
         const codeModulesPath: string = path.join(rootPath, "code_modules");
         fs.readdirSync(codeModulesPath).map((file) => {
           fs.copyFileSync(path.join(codeModulesPath, file), path.join(distPath, file));
           console.log(`Barretta: File Copied to dist. : ${file}`);
         });
 
-        // dist のファイルで UTF-8 のものを SJIS に変換す�?(frxファイルを除�?
+        // dist file encoding conversion (except for frx files) (using custom encoding setting)
         fs.readdirSync(distPath).map((file) => {
           if (path.extname(file) !== ".frx") {
             const txtData: Buffer = fs.readFileSync(path.join(distPath, file));
             if (encoding.detect(txtData) === "UTF8") {
-              const buf: Buffer = iconv.encode(String(txtData), "CP932");
+              const buf: Buffer = iconv.encode(String(txtData), targetEncoding);
               fs.writeFileSync(path.join(distPath, file), buf);
-              console.log(`Barretta: ${file} encoding to Shift-JIS.`);
+              console.log(`Barretta: ${file} encoding to ${vbaEncoding}.`);
             }
           }
         });
@@ -146,13 +154,13 @@ export const pushExcel: PushExcel = async () => {
         fs.appendFileSync(ps1FilePath, gen.generatePushPs1(genParams));
         console.log("Barretta: push_modules.ps1 Created.");
 
-        // ps1ファイルをShift-JISに変�?
+        // ps1 file encoding conversion (using custom encoding setting)
         const txtData: Buffer = fs.readFileSync(ps1FilePath);
-        const buf: Buffer = iconv.encode(String(txtData), "CP932");
+        const buf: Buffer = iconv.encode(String(txtData), targetEncoding);
         fs.writeFileSync(ps1FilePath, buf);
-        console.log(`Barretta: push_modules.ps1 encoding to Shift-JIS.`);
+        console.log(`Barretta: push_modules.ps1 encoding to ${vbaEncoding}.`);
 
-        // push_modules.ps1 を実行す�?
+        // push_modules.ps1 
         const ps1Params: Ps1Params = {
           execType: "-File",
           ps1FilePath,
@@ -180,16 +188,24 @@ export const pullExcel: PullExcel = async () => {
   console.log(`Barretta: Start pullExcel.`);
 
   const rootPath: string | undefined = await setRootPath();
-
   if (rootPath === undefined) {
     console.log(`Barretta: Exit pullExcel.`);
     return;
   }
-
   if (!preCheckPull(rootPath)) {
     console.log(`Barretta: Failed preCheckPull.`);
     return;
   }
+
+  // read encoding setting (following encoding / decoding settings based on user settings --> encodingMap)
+  const configBarretta: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("barretta");
+  const vbaEncoding: string = configBarretta.get("vbaEncoding") || "Shift-JIS";
+  const encodingMap: Record<string, string> = {
+    "Shift-JIS": "CP932",
+    "GB2312": "GB2312",
+    "ANSI": "win1252",
+  };
+  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -198,16 +214,24 @@ export const pullExcel: PullExcel = async () => {
   const fileName: string = excelFileList[0];
 
   vscode.window.withProgress(
-    { location: vscode.ProgressLocation.Notification, title: l("progress.pull") },
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: l("progress.pull"),
+    },
     async (progress) => {
       progress.report({ message: "Working...." });
 
-      const ps1FilePath = path.join(rootPath, "barretta-core/scripts/pull_modules.ps1");
+      const ps1FilePath = path.join(
+        rootPath,
+        "barretta-core/scripts/pull_modules.ps1",
+      );
 
       try {
         // Generate push_modules.ps1
-        const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("pull");
-        const pullIgnoreDocument: boolean = config.get("ignoreDocuments") ?? false;
+        const config: vscode.WorkspaceConfiguration =
+          vscode.workspace.getConfiguration("pull");
+        const pullIgnoreDocument: boolean =
+          config.get("ignoreDocuments") ?? false;
 
         const genParams = {
           rootPath,
@@ -217,34 +241,41 @@ export const pullExcel: PullExcel = async () => {
         fs.appendFileSync(ps1FilePath, gen.generatePullPs1(genParams));
         console.log("Barretta: pull_modules.ps1 Created.");
 
-        // ps1ファイルをShift-JISに変�?
+        // ps1 file encoding conversion (using custom encoding setting)
         const txtData: Buffer = fs.readFileSync(ps1FilePath);
-        const buf: Buffer = iconv.encode(String(txtData), "CP932");
+        const buf: Buffer = iconv.encode(String(txtData), targetEncoding);
         fs.writeFileSync(ps1FilePath, buf);
-        console.log(`Barretta: pull_modules.ps1 encoding to Shift-JIS.`);
+        console.log(`Barretta: pull_modules.ps1 encoding to ${vbaEncoding}.`);
 
-        // pull_modules.ps1 を実行す�?
+        // pull_modules.ps1
         const ps1Params: Ps1Params = {
           execType: "-File",
           ps1FilePath,
         };
 
         if (await runPs1(ps1Params)) {
-          const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("pull");
+          const config: vscode.WorkspaceConfiguration =
+            vscode.workspace.getConfiguration("pull");
 
           if (config.get("encodingToUtf8")) {
             const modulePath = path.join(rootPath, "code_modules");
             fs.readdirSync(modulePath).map((file) => {
               if (path.extname(file) !== ".frx") {
-                const txtData: Buffer = fs.readFileSync(path.join(modulePath, file));
-                const buf: string = iconv.decode(txtData, "Shift-JIS");
+                const txtData: Buffer = fs.readFileSync(
+                  path.join(modulePath, file),
+                );
+
+                // decode the file: using custom encoding setting
+                const buf: string = iconv.decode(txtData, targetEncoding);
                 fs.writeFileSync(path.join(modulePath, file), buf);
                 console.log(`Barretta: ${file} encoding to UTF-8.`);
               }
             });
           }
 
-          vscode.window.showInformationMessage(`Barretta: ${l("pull.complete")}`);
+          vscode.window.showInformationMessage(
+            `Barretta: ${l("pull.complete")}`,
+          );
           console.log(`Barretta: Complete pullExcel.`);
         } else {
           vscode.window.showErrorMessage(`Barretta: ${l("pull.failed")}`);
@@ -265,16 +296,25 @@ export const openBook: OpenBook = async () => {
   console.log(`Barretta: Start openBook.`);
 
   const rootPath: string | undefined = await setRootPath();
-
   if (rootPath === undefined) {
     console.log(`Barretta: Exit openBook.`);
     return;
   }
-
   if (!preCheckOpen(rootPath)) {
     console.log(`Barretta: Failed preCheckOpen.`);
     return;
   }
+
+  // read encoding setting (following encoding / decoding settings based on user settings --> encodingMap)
+  const config: vscode.WorkspaceConfiguration =
+    vscode.workspace.getConfiguration("barretta");
+  const vbaEncoding: string = config.get("vbaEncoding") || "Shift-JIS";
+  const encodingMap: Record<string, string> = {
+    "Shift-JIS": "CP932",
+    "GB2312": "GB2312",
+    "ANSI": "win1252",
+  };
+  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -283,11 +323,17 @@ export const openBook: OpenBook = async () => {
   const fileName: string = excelFileList[0];
 
   vscode.window.withProgress(
-    { location: vscode.ProgressLocation.Notification, title: l("progress.open") },
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: l("progress.open"),
+    },
     async (progress) => {
       progress.report({ message: "Working...." });
 
-      const ps1FilePath = path.join(rootPath, "barretta-core/scripts/open_excelbook.ps1");
+      const ps1FilePath = path.join(
+        rootPath,
+        "barretta-core/scripts/open_excelbook.ps1",
+      );
 
       try {
         // Generate open_excelbook.ps1
@@ -298,21 +344,23 @@ export const openBook: OpenBook = async () => {
         fs.appendFileSync(ps1FilePath, gen.generateOpenBookPs1(genParams));
         console.log("Barretta: open_excelbook.ps1 Created.");
 
-        // ps1ファイルをShift-JISに変�?
+        // ps1文件编码转换
+        // PS1 file encoding conversion (using custom encoding setting)
         const txtData: Buffer = fs.readFileSync(ps1FilePath);
-
-        const buf: Buffer = iconv.encode(String(txtData), "CP932");
+        const buf: Buffer = iconv.encode(String(txtData), targetEncoding);
         fs.writeFileSync(ps1FilePath, buf);
-        console.log(`Barretta: open_excelbook.ps1 encoding to Shift-JIS.`);
+        console.log(`Barretta: open_excelbook.ps1 encoding to ${vbaEncoding}.`);
 
-        // open_excelbook.ps1 を実行す�?
+        // open_excelbook.ps1
         const ps1Params: Ps1Params = {
           execType: "-File",
           ps1FilePath,
         };
 
         if (await runPs1(ps1Params)) {
-          vscode.window.showInformationMessage(`Barretta: ${l("open.complete")}`);
+          vscode.window.showInformationMessage(
+            `Barretta: ${l("open.complete")}`,
+          );
           console.log(`Barretta: Complete openBook.`);
         } else {
           vscode.window.showErrorMessage(`Barretta: ${l("open.failed")}`);
@@ -333,16 +381,24 @@ export const callMacro: CallMacro = async (callMethod, methodParams?) => {
   console.log(`Barretta: Start callMacro.`);
 
   const rootPath: string | undefined = await setRootPath();
-
   if (rootPath === undefined) {
     console.log(`Barretta: Exit callMacro.`);
     return;
   }
-
   if (!preCheckCallMacro(rootPath)) {
     console.log(`Barretta: Failed callMacro.`);
     return;
   }
+
+  // Read encoding settings (following encoding / decoding settings based on user settings --> encodingMap)
+  const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("barretta");
+  const vbaEncoding: string = config.get("vbaEncoding") || "Shift-JIS";
+  const encodingMap: Record<string, string> = {
+    "Shift-JIS": "CP932",
+    "GB2312": "GB2312",
+    "ANSI": "win1252"
+  };
+  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -367,13 +423,14 @@ export const callMacro: CallMacro = async (callMethod, methodParams?) => {
       try {
         const ps1FilePath = path.join(rootPath, "barretta-core/scripts/run_macro.ps1");
 
-        // ps1ファイルをShift-JISに変�?
+        // ps1文件编码转换
+        // ps1 file encoding conversion (using custom encoding setting)
         const txtData: Buffer = fs.readFileSync(ps1FilePath);
-        const buf: Buffer = iconv.encode(String(txtData), "CP932");
+        const buf: Buffer = iconv.encode(String(txtData), targetEncoding);
         fs.writeFileSync(ps1FilePath, buf);
-        console.log(`Barretta: run_macro.ps1 encoding to Shift-JIS.`);
+        console.log(`Barretta: run_macro.ps1 encoding to ${vbaEncoding}.`);
 
-        // pull_modules.ps1 を実行す�?
+        // pull_modules.ps1
         const ps1Params: Ps1Params = {
           execType: "-File",
           ps1FilePath,
