@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { l } from "./i18n";
 
 type QuickPick = (listItems: string[], title: string) => Promise<string | undefined>;
 
@@ -13,7 +14,7 @@ export const setRootPath: SetRootPath = async () => {
 
   if (!vscode.window.activeTextEditor) {
     if (vscode.workspace.workspaceFolders === undefined) {
-      vscode.window.showErrorMessage(`Barretta: いずれかのフォルダを開いた状態で実行してください。`);
+      vscode.window.showErrorMessage(`Barretta: ${l("init.folderNotOpened")}`);
       console.log(`Barretta: The target could not be identified because the folder was not opened.`);
       return rootPath;
     }
@@ -33,9 +34,10 @@ export const setRootPath: SetRootPath = async () => {
       console.log(`Barretta: ${rootPath} was selected from the current active editors.`);
       return rootPath;
     } else {
-      vscode.window.showErrorMessage(`Barretta: 対象のフォルダを特定できませんでした。`);
+      vscode.window.showErrorMessage(`Barretta: ${l("init.failedToLocate")}`);
       console.log(`Barretta: Failed to locate root folder.`);
       return rootPath;
     }
   }
 };
+

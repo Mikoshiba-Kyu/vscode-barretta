@@ -4,6 +4,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import * as vscode from "vscode";
 import { callMacro, openBook, pullExcel, pushExcel } from "./api";
+import { l } from "./i18n";
 import { setRootPath } from "./lib_vscode_api";
 
 type Macro = {
@@ -60,14 +61,14 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
               try {
                 const jsonText = fs.readFileSync(jsonPath).toString();
                 this._view.webview.postMessage({ type: "reloadLauncher", jsonText: jsonText });
-                vscode.window.showInformationMessage("Barretta: MacroRunnerを更新しました。");
+                vscode.window.showInformationMessage(`Barretta: ${l("macroRunner.updated")}`);
                 console.log(`Barretta: Complete reload macro runner.`);
               } catch {
                 this._view.webview.postMessage({
                   type: "reloadLauncher",
                   jsonText: `Error : Check [barretta-launcher.json]`,
                 });
-                vscode.window.showInformationMessage("Barretta: barretta-launcher.json に問題があります。");
+                vscode.window.showInformationMessage(`Barretta: ${l("macroRunner.jsonError")}`);
                 console.log(`Barretta: Failed reload macro runner.`);
               }
             }
@@ -248,3 +249,4 @@ const setRootPathAsWebView = () => {
     }
   }
 };
+

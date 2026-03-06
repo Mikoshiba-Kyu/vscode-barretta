@@ -27,6 +27,7 @@
     "workspaceContains:barretta-core"
   ],
   "main": "./dist/extension.js",
+  "l10n": "./l10n",
   "contributes": {
     "configuration": [
       {
@@ -34,33 +35,40 @@
         "properties": {
           "barretta.hotReload": {
             "type": "boolean",
-            "description": "Code_Modulesのファイル更新時に自動的にPushします。",
+            "description": "%config.hotReload.description%",
             "default": true
           },
           "push.ignoreDocuments": {
             "type": "boolean",
-            "description": "ブックやシートなどのドキュメントモジュールを除外します。 ※This version does not work yet.",
+            "description": "%config.pushIgnoreDocuments.description%",
             "default": true
           },
           "pull.ignoreDocuments": {
             "type": "boolean",
-            "description": "ブックやシートなどのドキュメントモジュールを除外します。",
+            "description": "%config.pullIgnoreDocuments.description%",
             "default": true
           },
           "pull.encodingToUtf8": {
             "type": "boolean",
-            "description": "テキストファイルをUTF-8でExportします。",
+            "description": "%config.encodingToUtf8.description%",
             "default": true
           },
           "vbaLint.enable": {
             "type": "boolean",
-            "description": "VBALintを有効化します。 ※This version does not work yet.",
+            "description": "%config.vbaLintEnable.description%",
             "default": true
           },
           "vbaLint.processOnSave": {
             "type": "boolean",
-            "description": "コードファイルの保存時にVBALintを実行します。 ※This version does not work yet.",
+            "description": "%config.vbaLintProcessOnSave.description%",
             "default": false
+          }
+          ,
+          "barretta.vbaEncoding": {
+            "type": "string",
+            "enum": ["Shift-JIS", "GB2312", "ANSI"],
+            "default": "Shift-JIS",
+            "description": "VBA 项目文件的编码方式，可选 Shift-JIS、GB2312、ANSI。"
           }
         }
       }
@@ -68,19 +76,19 @@
     "commands": [
       {
         "command": "vscode-barretta.init",
-        "title": "Barretta: Init"
+        "title": "%command.init.title%"
       },
       {
         "command": "vscode-barretta.push",
-        "title": "Barretta: Push"
+        "title": "%command.push.title%"
       },
       {
         "command": "vscode-barretta.pull",
-        "title": "Barretta: Pull"
+        "title": "%command.pull.title%"
       },
       {
         "command": "vscode-barretta.open",
-        "title": "Barretta: Open"
+        "title": "%command.open.title%"
       }
     ],
     "keybindings": [
@@ -106,13 +114,13 @@
         {
           "type": "webview",
           "id": "vscode-barretta.launcher",
-          "name": "Barretta-Launcher"
+          "name": "%view.launcher.name%"
         }
       ]
     }
   },
   "scripts": {
-    "vscode:prepublish": "yarn package",
+    "vscode:prepublish": "yarn clean-nls && yarn copy-nls && yarn package",
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
@@ -123,7 +131,9 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "format:check": "biome format --check .",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "copy-nls": "copy \"l10n\\package\\package.nls.json\" . && copy \"l10n\\package\\package.nls.ja.json\" . && copy \"l10n\\package\\package.nls.zh-cn.json\" .",
+    "clean-nls": "del package.nls.json package.nls.ja.json package.nls.zh-cn.json 2>nul"
   },
   "devDependencies": {
     "@biomejs/biome": "2.0.5",
@@ -141,6 +151,7 @@
     "webpack-cli": "^5.0.0"
   },
   "dependencies": {
+    "@vscode/l10n": "^0.0.18",
     "child-process": "^1.0.2",
     "encoding-japanese": "^2.0.0",
     "iconv-lite": "^0.6.3",

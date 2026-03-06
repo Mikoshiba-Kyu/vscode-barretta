@@ -21,3 +21,4 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
   // No cleanup required
 }
+
