@@ -108,6 +108,18 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
+    // Load localization for sidebar menu
+    const locale = vscode.env.language;
+    const i18nPath = path.join(this._extensionUri.fsPath, "l10n", "sidebar-menu", `${locale}.json`);
+    let i18n: Record<string, string>;
+    try {
+      i18n = JSON.parse(fs.readFileSync(i18nPath, "utf8"));
+    } catch {
+      // Fallback to English
+      const defaultPath = path.join(this._extensionUri.fsPath, "l10n", "sidebar-menu", "en.json");
+      i18n = JSON.parse(fs.readFileSync(defaultPath, "utf8"));
+    }
+
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "main.js"));
 
@@ -150,16 +162,16 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
 					<div id="macro-card${index}" class="macro-card">
 						<hr>
 						<div id="macro-header${index}" class="macro-header">
-						<button id="${index}" class="run-button">Run</button>
+						<button id="${index}" class="run-button">${i18n.run}</button>
 							<h2>${macro.title}</h2>
 						</div>
 						<div id="macro-params${index}" class="macro-params">
 							<div id="macro-method${index}" class="macro-method">
-								<div class="label">Method : </div>
+								<div class="label">${i18n.method}</div>
 								<h3 id="method${index}">${macro.call}</h3>
 							</div>
 							<div id="macro-args${index}" class="macro-args">
-								<div class="label">Args : </div>
+								<div class="label">${i18n.args}</div>
 								<h3 id="args${index}">${fixArgs}</h3>
 							</div>
 						</div>
@@ -196,20 +208,21 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
 		</head>
 		<body>
 			<div class="short-cut">
-				<h2>Commands</h2>
-				<button class="push-button">Push</button>
-				<button class="pull-button">Pull</button>
-				<button class="open-button">Open</button>
+				<h2>${i18n.commands}</h2>
+				<button class="push-button">${i18n.push}</button>
+				<button class="pull-button">${i18n.pull}</button>
+				<button class="open-button">${i18n.open}</button>
 			</div>
 			<div class="macro-list">
 				<div class="macrolist-header">
-					<h2>Macro Runner</h2>
-					<button class="reload-button">Reload</button>
+					<h2>${i18n.macroRunner}</h2>
+					<button class="reload-button">${i18n.reload}</button>
 				</div>
 				<div class="macrolist-body">
 					${macroList}
 				</div">
 			</div>
+			<script nonce="${nonce}">window.i18n = ${JSON.stringify(i18n)};</script>
 			<script nonce="${nonce}" src="${scriptUri}"></script>
 		</body>
 		</html>`;

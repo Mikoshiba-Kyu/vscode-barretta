@@ -1,0 +1,11 @@
+{
+  "commands": "コマンド",
+  "push": "Push",
+  "pull": "Pull",
+  "open": "Open",
+  "reload": "更新",
+  "macroRunner": "マクロランナー",
+  "run": "実行",
+  "method": "メソッド : ",
+  "args": "引数 : "
+}

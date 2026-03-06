@@ -1,6 +1,13 @@
 window.addEventListener("DOMContentLoaded", () => {
   const vscode = acquireVsCodeApi();
 
+  // Get i18n from window object (injected by provider.ts)
+  const i18n = window.i18n || {
+    run: "Run",
+    method: "Method : ",
+    args: "Args : "
+  };
+
   window.addEventListener("message", (event) => {
     const data = event.data;
     switch (data.type) {
@@ -24,8 +31,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const clickOpen = () => vscode.postMessage({ type: "open" });
   const clickRunMacro = (e) => {
     const id = e.currentTarget.id;
-    method = document.querySelector(`#method${id}`).textContent;
-    args = document.querySelector(`#args${id}`).textContent;
+    const method = document.querySelector(`#method${id}`).textContent;
+    const args = document.querySelector(`#args${id}`).textContent;
 
     vscode.postMessage({
       type: "runMacro",
@@ -43,7 +50,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const reloadLauncher = (data) => {
     document.querySelector(".macrolist-body").remove();
 
-    jsonData = JSON.parse(data.jsonText);
+    const jsonData = JSON.parse(data.jsonText);
 
     // macrolist-body
     const macrolistBody = document.createElement("div");
@@ -68,13 +75,11 @@ window.addEventListener("DOMContentLoaded", () => {
       const runButton = document.createElement("button");
       runButton.id = `${index}`;
       runButton.className = "run-button";
-      runButton.textContent = "Run";
       runButton.onclick = clickRunMacro;
       document.querySelector(`#macro-header${index}`).appendChild(runButton);
 
       // macro-header > h2
       const macroTitle = document.createElement("h2");
-      macroTitle.textContent = macro.title;
       document.querySelector(`#macro-header${index}`).appendChild(macroTitle);
 
       // macro-params
@@ -91,7 +96,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const methodLabel = document.createElement("div");
       methodLabel.className = "label";
-      methodLabel.textContent = "Method : ";
       document.querySelector(`#macro-method${index}`).appendChild(methodLabel);
 
       const methodText = document.createElement("h3");
@@ -107,7 +111,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const argsLabel = document.createElement("div");
       argsLabel.className = "label";
-      argsLabel.textContent = "Args : ";
       document.querySelector(`#macro-args${index}`).appendChild(argsLabel);
 
       const argsText = document.createElement("h3");

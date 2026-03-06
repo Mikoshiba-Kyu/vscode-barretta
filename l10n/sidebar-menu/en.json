@@ -1,0 +1,11 @@
+{
+  "commands": "Commands",
+  "push": "Push",
+  "pull": "Pull",
+  "open": "Open",
+  "reload": "Reload",
+  "macroRunner": "Macro Runner",
+  "run": "Run",
+  "method": "Method : ",
+  "args": "Args : "
+}
