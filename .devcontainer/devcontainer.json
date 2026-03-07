@@ -3,10 +3,35 @@
   "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
   "runArgs": ["--name", "vscode-barretta"],
   "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "true",
+      "installOhMyZsh": "true",
+      "installOhMyZshConfig": "true"
+    },
+    "ghcr.io/braun-daniel/devcontainer-features/fzf:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers-extra/features/uv:1": {},
     "ghcr.io/devcontainers/features/powershell:2": {}
   },
-
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libnss3 libatk-bridge2.0-0 libdrm2 libgtk-3-0 libgbm1 libasound2",
+  "containerEnv": {
+    "GH_TOKEN": "${localEnv:GH_TOKEN}"
+  },
+    "mounts": [
+    {
+      // GitHub Copilot CLI の認証情報を WSL ホストから取得するためのマウント
+      // postCreateCommand.sh で /workspaces/repo-name/.copilot/config.json にコピーされる
+      "source": "${localEnv:HOME}/.copilot",
+      "target": "/home/node/.copilot-host",
+      "type": "bind"
+    },
+    {
+      // GitHub CLI の認証情報を WSL ホストから共有するためのマウント
+      "source": "${localEnv:HOME}/.config/gh",
+      "target": "/home/node/.config/gh",
+      "type": "bind"
+    }
+  ],
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
 
   "customizations": {
     "vscode": {
@@ -17,7 +42,8 @@
         "editor.codeActionsOnSave": {
           "source.organizeImports.biome": "explicit"
         },
-        "npm.packageManager": "yarn"
+        "npm.packageManager": "yarn",
+        "terminal.integrated.defaultProfile.linux": "zsh"
       }
     }
   }
