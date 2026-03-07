@@ -32,6 +32,12 @@
       "label": "tasks: watch-tests",
       "dependsOn": ["npm: watch", "npm: watch-tests"],
       "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "tasks: watch",
+      "dependsOn": ["npm: watch"],
+      "problemMatcher": ["$tsc"]
     }
+
   ]
 }
