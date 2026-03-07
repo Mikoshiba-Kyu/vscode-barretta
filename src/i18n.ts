@@ -66,7 +66,6 @@ function loadMessages(): Record<string, string> {
     // fallback bundle files (en) possible paths：<extensions-root>/l10n/bundle.l10n.json
     const fallbackPaths = [
       path.join(__dirname, "..", "l10n", "bundle.l10n.json"),
-      // path.join(__dirname, "..", "..", "l10n", "bundle.l10n.json"),
     ];
 
     for (const jsonPath of fallbackPaths) {
@@ -87,7 +86,7 @@ function loadMessages(): Record<string, string> {
 /**
  * localize & format strings
  * @param key - string keys in bundle.<locale>.json
- * @param args - replaceable parameters for the localized string, will replace {0}, {1}, ... in the localized string
+ * @param args - replaceable parameters for the localized string, will replace {0}, {1}
  * @returns localized and formatted string
  */
 export function l(key: string, ...args: (string | number | boolean)[]): string {

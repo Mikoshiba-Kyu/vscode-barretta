@@ -16,24 +16,6 @@ window.addEventListener("DOMContentLoaded", () => {
         console.log("Launcher reloaded with new macro data.");
         break;
       }
-
-      // provider.ts will send locale data back to WebView using event "localeData"
-      // case "localeData": {
-      //   console.log("Locale data received in WebView:", data.localeData);
-      //   i18n = data.localeData || {
-      //       run: "Run",
-      //       method: "Method : ",
-      //       args: "Args : ",
-      //       push: "Push",
-      //       pull: "Pull",
-      //       open: "Open",
-      //       reload: "Reload",
-      //       noMacro: "No macros.",
-      //       commands: "Commands",
-      //       macroRunner: "Macro Runner"
-      //     };
-      //   break;
-      // }
     }
   });
 

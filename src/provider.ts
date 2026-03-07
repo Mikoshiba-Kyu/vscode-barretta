@@ -139,16 +139,6 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
           callMacro(data.call, arrayArgs);
           break;
         }
-
-        // transfer locale data for sidebar menu, based on current vscode language setting, fallback to EN.
-        // case "loadLocale": {
-        //   const localeData = loadSidebarLocale(this._extensionUri, vscode.env.language || "en");
-        //   webviewView.webview.postMessage({
-        //     type: "localeData",
-        //     localeData: localeData,
-        //   });
-        //   break;
-        // }
       }
     });
   }
