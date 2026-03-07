@@ -7,6 +7,42 @@ import { callMacro, openBook, pullExcel, pushExcel } from "./api";
 import { l } from "./i18n";
 import { setRootPath } from "./lib_vscode_api";
 
+/**
+ * load sidebar menu locale data based on current vscode language setting, 
+ * using event send back to WebView page.
+ * @param extensionUri extensionUri from VSCode
+ * @param locale current vscode language setting, such as "zh-cn", "en", "ja"...
+ * @returns langeuage data object for sidebar menu, if not found, return empty object.
+ */
+function loadSidebarLocale(extensionUri: vscode.Uri, locale: string): Record<string, string> {
+  const localeMap: Record<string, string> = {
+    "zh-cn": "zh-cn",
+    "ja": "ja",
+    "en": "en",
+  };
+
+  const normalizedLocale = locale.toLowerCase();
+  const mappedLocale = localeMap[normalizedLocale] || "en";
+
+  try {
+    // sidebar locale file：
+    // <extension-root>/l10n/sidebar-menu/<locale>.json
+    const jsonPath = path.join(extensionUri.fsPath, "l10n", "sidebar-menu", `${mappedLocale}.json`);
+    if (fs.existsSync(jsonPath)) {
+      return JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+    }
+  } catch {}
+
+  // if locale file not found, fallback to default en language file: 
+  // <extension-root>/l10n/sidebar-menu/en.json
+  try {
+    const defaultPath = path.join(extensionUri.fsPath, "l10n", "sidebar-menu", "en.json");
+    return JSON.parse(fs.readFileSync(defaultPath, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
 type Macro = {
   title: string;
   call: string;
@@ -103,24 +139,23 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
           callMacro(data.call, arrayArgs);
           break;
         }
+
+        // transfer locale data for sidebar menu, based on current vscode language setting, fallback to EN.
+        // case "loadLocale": {
+        //   const localeData = loadSidebarLocale(this._extensionUri, vscode.env.language || "en");
+        //   webviewView.webview.postMessage({
+        //     type: "localeData",
+        //     localeData: localeData,
+        //   });
+        //   break;
+        // }
       }
     });
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
-    // Load localization for sidebar menu
-    const locale = vscode.env.language;
-    const i18nPath = path.join(this._extensionUri.fsPath, "l10n", "sidebar-menu", `${locale}.json`);
-    let i18n: Record<string, string>;
-    try {
-      i18n = JSON.parse(fs.readFileSync(i18nPath, "utf8"));
-    } catch {
-      // Fallback to English
-      const defaultPath = path.join(this._extensionUri.fsPath, "l10n", "sidebar-menu", "en.json");
-      i18n = JSON.parse(fs.readFileSync(defaultPath, "utf8"));
-    }
-
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
+    // const i18nScriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "i18n.js"));
     const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "main.js"));
 
     // Do the same for the stylesheet.
@@ -134,8 +169,11 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
     // Import Launcher Data and Generate HTML.
     const rootPath: string | undefined = setRootPathAsWebView();
 
+    // load sidebar menu locale data, based on current vscode language setting
+    const localeData = loadSidebarLocale(this._extensionUri, vscode.env.language || "en");
+
     let macroList = `<div class="macro-list">
-											No Data.
+											${localeData.noMacro || "No macros."}
 										</div>`;
     if (rootPath !== undefined) {
       const jsonPath = path.join(String(rootPath), `barretta-launcher.json`);
@@ -162,16 +200,16 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
 					<div id="macro-card${index}" class="macro-card">
 						<hr>
 						<div id="macro-header${index}" class="macro-header">
-						<button id="${index}" class="run-button">${i18n.run}</button>
+						<button id="${index}" class="run-button">${localeData.run}</button>
 							<h2>${macro.title}</h2>
 						</div>
 						<div id="macro-params${index}" class="macro-params">
 							<div id="macro-method${index}" class="macro-method">
-								<div class="label">${i18n.method}</div>
+								<div class="label">${localeData.method}</div>
 								<h3 id="method${index}">${macro.call}</h3>
 							</div>
 							<div id="macro-args${index}" class="macro-args">
-								<div class="label">${i18n.args}</div>
+								<div class="label">${localeData.args}</div>
 								<h3 id="args${index}">${fixArgs}</h3>
 							</div>
 						</div>
@@ -208,22 +246,22 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
 		</head>
 		<body>
 			<div class="short-cut">
-				<h2>${i18n.commands}</h2>
-				<button class="push-button">${i18n.push}</button>
-				<button class="pull-button">${i18n.pull}</button>
-				<button class="open-button">${i18n.open}</button>
+				<h2>${localeData.commands || 'Commands'}</h2>
+				<button class="push-button">${localeData.push}</button>
+				<button class="pull-button">${localeData.pull}</button>
+				<button class="open-button">${localeData.open}</button>
 			</div>
 			<div class="macro-list">
 				<div class="macrolist-header">
-					<h2>${i18n.macroRunner}</h2>
-					<button class="reload-button">${i18n.reload}</button>
+					<h2>${localeData.macroRunner || 'Macro Runner'}</h2>
+					<button class="reload-button">${localeData.reload}</button>
 				</div>
 				<div class="macrolist-body">
 					${macroList}
-				</div">
+				</div>
 			</div>
-			<script nonce="${nonce}">window.i18n = ${JSON.stringify(i18n)};</script>
 			<script nonce="${nonce}" src="${scriptUri}"></script>
+      <script nonce="${nonce}" id="webview-locale">${JSON.stringify(localeData)}</script>
 		</body>
 		</html>`;
   }

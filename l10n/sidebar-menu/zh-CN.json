@@ -1,11 +1,12 @@
 {
-  "commands": "命令",
+  "commands": "插件指令",
+  "macroRunner": "宏脚本运行器",
   "push": "推送",
   "pull": "拉取",
   "open": "打开",
   "reload": "刷新",
-  "macroRunner": "宏运行器",
   "run": "运行",
   "method": "方法 : ",
-  "args": "参数 : "
+  "args": "参数 : ",
+  "noMacro": "宏列表为空"
 }
