@@ -1,11 +1,9 @@
 import * as vscode from "vscode";
 
-// Barretta 日志输出通道
-// Barretta log output channel
+// Barretta log output ro VSCode channel window
 let outputChannel: vscode.OutputChannel | undefined;
 
 /**
- * 获取或创建日志输出通道
  * Get or create log output channel
  */
 function getOutputChannel(): vscode.OutputChannel {
@@ -16,7 +14,6 @@ function getOutputChannel(): vscode.OutputChannel {
 }
 
 /**
- * 输出信息日志
  * Log info message
  */
 export function log(message: string): void {
@@ -26,7 +23,6 @@ export function log(message: string): void {
 }
 
 /**
- * 输出错误日志
  * Log error message
  */
 export function error(message: string, err?: unknown): void {
@@ -46,7 +42,6 @@ export function error(message: string, err?: unknown): void {
 }
 
 /**
- * 输出警告日志
  * Log warning message
  */
 export function warn(message: string): void {
@@ -56,7 +51,6 @@ export function warn(message: string): void {
 }
 
 /**
- * 显示日志面板
  * Show log panel
  */
 export function show(): void {
@@ -64,7 +58,6 @@ export function show(): void {
 }
 
 /**
- * 清理日志通道
  * Dispose log channel
  */
 export function dispose(): void {

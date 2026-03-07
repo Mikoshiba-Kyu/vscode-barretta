@@ -2,6 +2,8 @@ import * as vscode from "vscode";
 import { init, openbook, pull, push } from "./commands";
 import { onSavedCodeFile } from "./events";
 import { BarrettaViewProvider } from "./provider";
+import { log } from "./logger";
+
 
 export function activate(context: vscode.ExtensionContext) {
   // Commands
@@ -17,9 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Events
   vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => onSavedCodeFile(document));
 
-  // logging to vscode output channel
-  const outputChannel = vscode.window.createOutputChannel("Barretta");
-  outputChannel.appendLine("Barretta extension activated");
+  log("Barretta activated");
 }
 
 export function deactivate() {
