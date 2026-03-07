@@ -15,6 +15,7 @@ type PreCheckCallMacro = (rootPath: string) => boolean;
 
 export const preCheckInit: PreCheckInit = (rootPath) => {
   // [barretta-core] フォルダ存在確認
+  // Check if [barretta-core] folder exists
   const barretta_core = path.join(rootPath, "barretta-core");
   if (fs.existsSync(barretta_core)) {
     vscode.window.showErrorMessage(`Barretta: ${l("init.alreadyInitialized", rootPath)}`);
@@ -29,6 +30,7 @@ export const preCheckPush: PreCheckPush = (rootPath) => {
   console.log(`Barretta: Start preCheckPush.`);
 
   // [barretta-core] フォルダ存在確認
+  // Check if [barretta-core] folder exists
   const barretta_core = path.join(rootPath, "barretta-core");
   if (!fs.existsSync(barretta_core)) {
     vscode.window.showErrorMessage(
@@ -39,6 +41,7 @@ export const preCheckPush: PreCheckPush = (rootPath) => {
   }
 
   // [excel_file] フォルダ存在確認
+  // Check if [excel_file] folder exists
   const excelFolderPath: string = path.join(rootPath, "excel_file");
   if (!fs.existsSync(excelFolderPath)) {
     vscode.window.showErrorMessage(`Barretta: ${l("init.excelFolderMissing", excelFolderPath)}`);
@@ -47,6 +50,7 @@ export const preCheckPush: PreCheckPush = (rootPath) => {
   }
 
   // 単一Excelファイル存在確認
+  // Check for single Excel file existence
   const fileList = fs.readdirSync(excelFolderPath);
   const excelFileList = fileList.filter((fileName) => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g));
 
@@ -61,6 +65,7 @@ export const preCheckPush: PreCheckPush = (rootPath) => {
   }
 
   // [code_modules] フォルダ存在確認
+  // Check if code_modules folder exists
   const codeModulesPath = path.join(rootPath, "code_modules");
   if (!fs.existsSync(codeModulesPath)) {
     vscode.window.showErrorMessage(`Barretta: ${l("init.codeModulesMissing", codeModulesPath)}`);
@@ -69,6 +74,7 @@ export const preCheckPush: PreCheckPush = (rootPath) => {
   }
 
   // [scripts] フォルダ存在確認
+  // Check if scripts folder exists
   const scriptsPath = path.join(rootPath, "barretta-core/scripts");
   if (!fs.existsSync(scriptsPath)) {
     vscode.window.showErrorMessage(`Barretta: ${l("init.scriptsFolderMissing", scriptsPath)}`);
@@ -84,24 +90,27 @@ export const preCheckPull: PreCheckPull = (rootPath) => {
   console.log(`Barretta: Start preCheckPull.`);
 
   // [barretta-core] フォルダ存在確認
+  // Check if [barretta-core] folder exists
   const barretta_core = path.join(rootPath, "barretta-core");
   if (!fs.existsSync(barretta_core)) {
     vscode.window.showErrorMessage(
-      `Barretta: 対象のフォルダ�?[barretta-core] フォルダが存在していません。\nまず、[Barretta: Init] コマンドでBarrettaプロジェクトを作成する必要があります。\n${barretta_core}`,
+      `Barretta: ${l("init.coreFolderMissing", barretta_core)}`,
     );
     console.log(`Barretta: [barretta-core] folder does not exist.`);
     return false;
   }
 
   // [excel_file] フォルダ存在確認
+  // Check if [excel_file] folder exists
   const excelFolderPath: string = path.join(rootPath, "excel_file");
   if (!fs.existsSync(excelFolderPath)) {
-    vscode.window.showErrorMessage(`Barretta: [excel_file] フォルダが存在していません。\n${excelFolderPath}`);
+    vscode.window.showErrorMessage(`Barretta: ${l("init.excelFolderMissing", excelFolderPath)}`);
     console.log(`Barretta: [excel_file] folder does not exist.`);
     return false;
   }
 
   // 単一Excelファイル存在確認
+  // Check for single Excel file existence
   const fileList = fs.readdirSync(excelFolderPath);
   const excelFileList = fileList.filter((fileName) => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g));
 
@@ -116,6 +125,7 @@ export const preCheckPull: PreCheckPull = (rootPath) => {
   }
 
   // [code_modules] フォルダ存在確認
+  // Check if [code_modules] folder exists
   const codeModulesPath = path.join(rootPath, "code_modules");
   if (!fs.existsSync(codeModulesPath)) {
     vscode.window.showErrorMessage(`Barretta: ${l("init.codeModulesMissing", codeModulesPath)}`);
@@ -124,6 +134,7 @@ export const preCheckPull: PreCheckPull = (rootPath) => {
   }
 
   // [scripts] フォルダ存在確認
+  // Check if [scripts] folder exists
   const scriptsPath = path.join(rootPath, "barretta-core/scripts");
   if (!fs.existsSync(scriptsPath)) {
     vscode.window.showErrorMessage(`Barretta: ${l("init.scriptsFolderMissing", scriptsPath)}`);
@@ -139,24 +150,27 @@ export const preCheckOpen: PreCheckOpen = (rootPath) => {
   console.log(`Barretta: Start preCheckOpen.`);
 
   // [barretta-core] フォルダ存在確認
+  // Check if [barretta-core] folder exists
   const barretta_core = path.join(rootPath, "barretta-core");
   if (!fs.existsSync(barretta_core)) {
     vscode.window.showErrorMessage(
-      `Barretta: 対象のフォルダ�?[barretta-core] フォルダが存在していません。\nまず、[Barretta: Init] コマンドでBarrettaプロジェクトを作成する必要があります。\n${barretta_core}`,
+      `Barretta: ${l("init.coreFolderMissing", barretta_core)}`,
     );
     console.log(`Barretta: [barretta-core] folder does not exist.`);
     return false;
   }
 
   // [excel_file] フォルダ存在確認
+  // Check if [excel_file] folder exists
   const excelFolderPath: string = path.join(rootPath, "excel_file");
   if (!fs.existsSync(excelFolderPath)) {
-    vscode.window.showErrorMessage(`Barretta: [excel_file] フォルダが存在していません。\n${excelFolderPath}`);
+    vscode.window.showErrorMessage(`Barretta: ${l("init.excelFolderMissing", excelFolderPath)}`);
     console.log(`Barretta: [excel_file] folder does not exist.`);
     return false;
   }
 
   // 単一Excelファイル存在確認
+  // Check for single Excel file existence
   const fileList = fs.readdirSync(excelFolderPath);
   const excelFileList = fileList.filter((fileName) => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g));
 
@@ -171,6 +185,7 @@ export const preCheckOpen: PreCheckOpen = (rootPath) => {
   }
 
   // [scripts] フォルダ存在確認
+  // Check if [scripts] folder exists
   const scriptsPath = path.join(rootPath, "barretta-core/scripts");
   if (!fs.existsSync(scriptsPath)) {
     vscode.window.showErrorMessage(`Barretta: ${l("init.scriptsFolderMissing", scriptsPath)}`);
@@ -186,24 +201,27 @@ export const preCheckCallMacro: PreCheckCallMacro = (rootPath) => {
   console.log(`Barretta: Start preCheckCallMacro.`);
 
   // [barretta-core] フォルダ存在確認
+  // Check if [barretta-core] folder exists
   const barretta_core = path.join(rootPath, "barretta-core");
   if (!fs.existsSync(barretta_core)) {
     vscode.window.showErrorMessage(
-      `Barretta: 対象のフォルダ�?[barretta-core] フォルダが存在していません。\nまず、[Barretta: Init] コマンドでBarrettaプロジェクトを作成する必要があります。\n${barretta_core}`,
+      `Barretta: ${l("init.coreFolderMissing", barretta_core)}`,
     );
     console.log(`Barretta: [barretta-core] folder does not exist.`);
     return false;
   }
 
   // [excel_file] フォルダ存在確認
+  // Check if [excel_file] folder exists
   const excelFolderPath: string = path.join(rootPath, "excel_file");
   if (!fs.existsSync(excelFolderPath)) {
-    vscode.window.showErrorMessage(`Barretta: [excel_file] フォルダが存在していません。\n${excelFolderPath}`);
+    vscode.window.showErrorMessage(`Barretta: ${l("init.excelFolderMissing", excelFolderPath)}`);
     console.log(`Barretta: [excel_file] folder does not exist.`);
     return false;
   }
 
   // 単一Excelファイル存在確認
+  // Check for single Excel file existence
   const fileList = fs.readdirSync(excelFolderPath);
   const excelFileList = fileList.filter((fileName) => fileName.match(/^(?!~\$).*\.(xls$|xlsx$|xlsm$|xlsb$|xlam$)/g));
 
@@ -218,6 +236,7 @@ export const preCheckCallMacro: PreCheckCallMacro = (rootPath) => {
   }
 
   // [code_modules] フォルダ存在確認
+  // Check if [code_modules] folder exists
   const codeModulesPath = path.join(rootPath, "code_modules");
   if (!fs.existsSync(codeModulesPath)) {
     vscode.window.showErrorMessage(`Barretta: ${l("init.codeModulesMissing", codeModulesPath)}`);
@@ -226,6 +245,7 @@ export const preCheckCallMacro: PreCheckCallMacro = (rootPath) => {
   }
 
   // [scripts] フォルダ存在確認
+  // Check if [scripts] folder exists
   const scriptsPath = path.join(rootPath, "barretta-core/scripts");
   if (!fs.existsSync(scriptsPath)) {
     vscode.window.showErrorMessage(`Barretta: ${l("init.scriptsFolderMissing", scriptsPath)}`);

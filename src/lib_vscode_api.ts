@@ -21,7 +21,7 @@ export const setRootPath: SetRootPath = async () => {
 
     const folders: readonly vscode.WorkspaceFolder[] = vscode.workspace.workspaceFolders;
     const listItems: string[] = folders.map((folder) => folder.uri.fsPath);
-    rootPath = await quickPick(listItems, `対象のフォルダを選択してください。`);
+    rootPath = await quickPick(listItems, l("init.folderSelect"));
     if (rootPath === undefined) console.log(`Barretta: The root folder selection has been canceled.`);
 
     return rootPath;
