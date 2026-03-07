@@ -5,10 +5,11 @@ import * as path from "node:path";
 import * as vscode from "vscode";
 import { callMacro, openBook, pullExcel, pushExcel } from "./api";
 import { l } from "./i18n";
+import { log } from "./logger";
 import { setRootPath } from "./lib_vscode_api";
 
 /**
- * load sidebar menu locale data based on current vscode language setting, 
+ * load sidebar menu locale data based on current vscode language setting,
  * using event send back to WebView page.
  * @param extensionUri extensionUri from VSCode
  * @param locale current vscode language setting, such as "zh-cn", "en", "ja"...
@@ -33,7 +34,7 @@ function loadSidebarLocale(extensionUri: vscode.Uri, locale: string): Record<str
     }
   } catch {}
 
-  // if locale file not found, fallback to default en language file: 
+  // if locale file not found, fallback to default en language file:
   // <extension-root>/l10n/sidebar-menu/en.json
   try {
     const defaultPath = path.join(extensionUri.fsPath, "l10n", "sidebar-menu", "en.json");
@@ -98,14 +99,16 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
                 const jsonText = fs.readFileSync(jsonPath).toString();
                 this._view.webview.postMessage({ type: "reloadLauncher", jsonText: jsonText });
                 vscode.window.showInformationMessage(`Barretta: ${l("macroRunner.updated")}`);
-                console.log(`Barretta: Complete reload macro runner.`);
+                // console.log(`Barretta: Complete reload macro runner.`);
+                log(`Barretta: Complete reload macro runner.`);
               } catch {
                 this._view.webview.postMessage({
                   type: "reloadLauncher",
                   jsonText: `Error : Check [barretta-launcher.json]`,
                 });
                 vscode.window.showInformationMessage(`Barretta: ${l("macroRunner.jsonError")}`);
-                console.log(`Barretta: Failed reload macro runner.`);
+                // console.log(`Barretta: Failed reload macro runner.`);
+                log(`Barretta: Failed reload macro runner.`);
               }
             }
           })();
@@ -134,8 +137,9 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
             arrayArgs = tmp.split(", ");
           }
 
-          console.log(data.call);
-          console.log(JSON.stringify(arrayArgs));
+          // console.log(data.call);
+          // console.log(JSON.stringify(arrayArgs));
+          log(`Run Macro: ${data.call} with args: ${JSON.stringify(arrayArgs)}`);
           callMacro(data.call, arrayArgs);
           break;
         }
@@ -231,7 +235,7 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
 			<link href="${styleResetUri}" rel="stylesheet">
 			<link href="${styleVSCodeUri}" rel="stylesheet">
 			<link href="${styleMainUri}" rel="stylesheet">
-			
+
 			<title>Barretta Launcher</title>
 		</head>
 		<body>
@@ -271,7 +275,8 @@ const setRootPathAsWebView = () => {
 
   if (!vscode.window.activeTextEditor) {
     if (vscode.workspace.workspaceFolders === undefined) {
-      console.log(`Barretta: The target could not be identified because the folder was not opened.`);
+      // console.log(`Barretta: The target could not be identified because the folder was not opened.`);
+      log(`Barretta: The target could not be identified because the folder was not opened.`);
       return undefined;
     }
 
@@ -282,10 +287,12 @@ const setRootPathAsWebView = () => {
       const rootWsFolder: vscode.WorkspaceFolder | undefined = vscode.workspace.getWorkspaceFolder(activeEditorPath);
 
       rootPath = rootWsFolder?.uri.path.replace(/^\//, "");
-      console.log(`Barretta: ${rootPath} was selected from the current active editors.`);
+      // console.log(`Barretta: ${rootPath} was selected from the current active editors.`);
+      log(`Barretta: ${rootPath} was selected from the current active editors.`);
       return rootPath;
     } else {
-      console.log(`Barretta: Failed to locate root folder.`);
+      // console.log(`Barretta: Failed to locate root folder.`);
+      log(`Barretta: Failed to locate root folder.`);
       return undefined;
     }
   }

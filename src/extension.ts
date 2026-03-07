@@ -16,6 +16,10 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Events
   vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => onSavedCodeFile(document));
+
+  // logging to vscode output channel
+  const outputChannel = vscode.window.createOutputChannel("Barretta");
+  outputChannel.appendLine("Barretta extension activated");
 }
 
 export function deactivate() {

@@ -24,19 +24,17 @@ type Ps1GenerateParams = {
 };
 
 /**
- * ExcelBookを開くPowershellスクリプトを返します�?
+ * ExcelBookを開くPowershellスクリプトを返します�?
  * @param genParams
  * @returns
  */
 export const generateOpenBookPs1: GenerateOpenBookPs1 = (genParams) => {
   //引数をPowerShellスクリプトに埋め込む
   const test: string = ps.default.openExcelbook as string;
-  console.log("src", test);
   const pwshWithArgs: string = ps.default.openExcelbook
     .replace(/{{argument1}}/g, genParams.rootPath)
     .replace(/{{argument2}}/g, genParams.fileName);
 
-  console.log("changed", pwshWithArgs);
   return pwshWithArgs;
 };
 
