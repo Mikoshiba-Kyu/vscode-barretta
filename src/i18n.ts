@@ -29,7 +29,7 @@ function getBundleFileName(locale: string): string {
 /**
  * load language bundle file based on current vscode.env.language, default fallback to English
  */
-function loadMessages(): Record<string, string> {
+function loadI18nObject(): Record<string, string> {
   const currentLocale = vscode.env.language;
 
   if (messagesCache && cachedLocale === currentLocale) {
@@ -46,9 +46,7 @@ function loadMessages(): Record<string, string> {
       : "bundle.l10n.json";
 
     // bundle files possible paths: <extensions-root>/l10n/bundle.l10n.{lang}.json
-    const possiblePaths = [
-      path.join(__dirname, "..", "l10n", bundleName),
-    ];
+    const possiblePaths = [path.join(__dirname, "..", "l10n", bundleName)];
 
     for (const jsonPath of possiblePaths) {
       if (fs.existsSync(jsonPath)) {
@@ -91,7 +89,7 @@ function loadMessages(): Record<string, string> {
  */
 export function l(key: string, ...args: (string | number | boolean)[]): string {
   // load language bundle files
-  const messages = loadMessages();
+  const messages = loadI18nObject();
 
   // lookup the localized message by key, fallback to key itself if not found
   const message = messages[key] || key;
