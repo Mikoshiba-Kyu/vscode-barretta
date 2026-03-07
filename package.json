@@ -68,7 +68,7 @@
             "type": "string",
             "enum": ["Shift-JIS", "GB2312", "ANSI"],
             "default": "Shift-JIS",
-            "description": "VBA 项目文件的编码方式，可选 Shift-JIS、GB2312、ANSI。"
+            "description": "%config.vbaEncoding.description%"
           }
         }
       }
