@@ -8,5 +8,6 @@
   "run": "実行",
   "method": "メソッド : ",
   "args": "引数 : ",
-  "noMacro": "マクロがありません。"
+  "noMacro": "マクロがありません。",
+  "pluginSettings": "設定"
 }
