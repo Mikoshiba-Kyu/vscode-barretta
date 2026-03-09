@@ -1,5 +1,5 @@
 button {
-  padding: 0.2rem 0.4rem;
+  padding: 0.2rem 0.8rem;
   width: fit-content;
   min-width: 4rem;
   height: fit-content;
@@ -10,6 +10,7 @@ button {
 
 .short-cut {
   white-space: nowrap;
+  margin-right: 0;
 }
 
 .short-cut button {
@@ -55,6 +56,58 @@ hr {
   margin: 2.4rem 0 0.8rem 0;
 }
 
+.macro-card > h2 {
+  float: inline-start;
+  margin: 0.6rem 0.8rem 0.6rem 0;
+}
+
 h3 {
   font-weight: bold;
 }
+
+/* Div style based on button, displayed on the right side */
+.short-cut > .settings-button {
+  padding: 0.2rem 0.4rem;
+  width: fit-content;
+  min-width: 4rem;
+  height: fit-content;
+  font-size: 1rem;
+  margin: 0.6rem 0 1.4rem auto;
+  border-radius: 0.2rem;
+  
+  /* Right alignment */
+  float: inline-end;
+}
+
+/* add unicode icon ⚙️ to button */
+.short-cut .settings-button::before { 
+  content: "⚙️";
+  margin: 0 0.4rem 0 0;
+}
+/* add unicode  icon ⇧ to push-button  */
+.short-cut .push-button::before{
+  content: "⇧";
+  margin: 0 0.4rem 0 0;
+}
+/* add unicode icon ⇩ to pull-button  */
+.short-cut .pull-button::before{
+  content: "⇩";
+  margin: 0 0.4rem 0 0;
+}
+/* add unicode icon ⏻ to open-button  */
+.short-cut .open-button::before{
+  content: "⏻";
+  margin: 0 0.4rem 0 0;
+}
+
+/* add unicode icon ↻ to refresh-button  */
+.macrolist-header .reload-button::before{
+  content: "↻";
+  margin: 0 0.4rem 0 0;
+}
+/* add unicode icon ▶ to button */
+.run-button::after{
+  content: "▶";
+  margin: 0 0 0 0.4rem;
+}
+
