@@ -249,16 +249,16 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
 		</head>
 		<body>
 			<div class="short-cut">
-				<h2>${localeData.commands || 'Commands'}</h2>
-				<button class="push-button">${localeData.push || 'Push'}</button>
-				<button class="pull-button">${localeData.pull || 'Pull'}</button>
-				<button class="open-button">${localeData.open || 'Open'}</button>
-				<button class="settings-button">${localeData.pluginSettings || 'Settings'}</button>
+				<h2>${localeData.commands || "Commands"}</h2>
+				<button class="push-button">${localeData.push || "Push"}</button>
+				<button class="pull-button">${localeData.pull || "Pull"}</button>
+				<button class="open-button">${localeData.open || "Open"}</button>
+				<button class="settings-button">${localeData.pluginSettings || "Settings"}</button>
 			</div>
 			<div class="macro-list">
 				<div class="macrolist-header">
-					<h2>${localeData.macroRunner || 'Macro Runner'}</h2>
-					<button class="reload-button">${localeData.reload || 'Reload'}</button>
+					<h2>${localeData.macroRunner || "Macro Runner"}</h2>
+					<button class="reload-button">${localeData.reload || "Reload"}</button>
 				</div>
 				<div class="macrolist-body">
 					${macroList}
