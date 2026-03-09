@@ -38,35 +38,38 @@
             "description": "%config.hotReload.description%",
             "default": true
           },
-          "push.ignoreDocuments": {
+          "barretta.push.ignoreDocuments": {
             "type": "boolean",
             "description": "%config.pushIgnoreDocuments.description%",
             "default": true
           },
-          "pull.ignoreDocuments": {
+          "barretta.pull.ignoreDocuments": {
             "type": "boolean",
             "description": "%config.pullIgnoreDocuments.description%",
             "default": true
           },
-          "pull.encodingToUtf8": {
+          "barretta.pull.encodingToUtf8": {
             "type": "boolean",
             "description": "%config.encodingToUtf8.description%",
             "default": true
           },
-          "vbaLint.enable": {
+          "barretta.vbaLint.enable": {
             "type": "boolean",
             "description": "%config.vbaLintEnable.description%",
             "default": true
           },
-          "vbaLint.processOnSave": {
+          "barretta.vbaLint.processOnSave": {
             "type": "boolean",
             "description": "%config.vbaLintProcessOnSave.description%",
             "default": false
-          }
-          ,
+          },
           "barretta.vbaEncoding": {
             "type": "string",
-            "enum": ["Shift-JIS", "GB2312", "ANSI"],
+            "enum": [
+              "Shift-JIS",
+              "GB2312",
+              "ANSI"
+            ],
             "default": "Shift-JIS",
             "description": "%config.vbaEncoding.description%"
           }
