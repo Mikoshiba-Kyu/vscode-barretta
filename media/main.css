@@ -13,6 +13,12 @@ button {
   margin-right: 0;
 }
 
+.short-cut > .short-cut-buttons {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
 .short-cut button {
   display: inline-block;
   margin-right: 0.5rem;
@@ -66,7 +72,7 @@ h3 {
 }
 
 /* Div style based on button, displayed on the right side */
-.short-cut > .settings-button {
+.short-cut-buttons > .settings-button {
   padding: 0.2rem 0.4rem;
   width: fit-content;
   min-width: 4rem;
