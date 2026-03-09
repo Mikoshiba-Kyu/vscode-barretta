@@ -97,7 +97,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       // macro-header > h2
       const macroTitle = document.createElement("h2");
-      macroTitle.textContent = macro.name;
+      macroTitle.textContent = macro.title;
       document.querySelector(`#macro-header${index}`).appendChild(macroTitle);
 
       // macro-params
