@@ -104,3 +104,43 @@ export function l(key: string, ...args: (string | number | boolean)[]): string {
 
   return message;
 }
+
+/**
+ * K-V mapping: encoding config (shown in settings) --> target encoding for iconv() func
+ */
+const encodingMap: Record<string, string> = {
+  "Shift-JIS": "CP932",
+  "GB2312": "GB2312",
+  "ANSI": "win1252"
+};
+
+/**
+ * Get VBA encoding setting from VSCode configuration
+ * keys in K-V object "encodingMap"
+ * @returns The configured VBA encoding (default: "Shift-JIS")
+ */
+export function getEncodingSettings(): string {
+  const config = vscode.workspace.getConfiguration("barretta");
+  return config.get<string>("vbaEncoding") || "Shift-JIS";
+}
+
+/**
+ * Mapping: config encoding --> target encoding for iconv-lite func
+ * key:encoding config (shown in settings) -->  value: K-V obj "encodingMap"
+ * @param vbaEncoding - The VBA encoding name from settings
+ * @returns The target encoding for iconv-lite (default: "CP932")
+ */
+export function getTargetEncoding(vbaEncoding?: string): string {
+  const encoding = vbaEncoding || getEncodingSettings();
+  return encodingMap[encoding] || "CP932";
+}
+
+/**
+ * Get the full encoding configuration
+ * @returns Object containing vbaEncoding and targetEncoding
+ */
+export function getEncodingConfig(): { vbaEncoding: string; targetEncoding: string } {
+  const vbaEncoding = getEncodingSettings();
+  const targetEncoding = getTargetEncoding(vbaEncoding);
+  return { vbaEncoding, targetEncoding };
+}

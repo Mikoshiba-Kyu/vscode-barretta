@@ -25,12 +25,14 @@ window.addEventListener("DOMContentLoaded", () => {
   document.querySelector(".push-button").addEventListener("click", () => clickPush());
   document.querySelector(".pull-button").addEventListener("click", () => clickPull());
   document.querySelector(".open-button").addEventListener("click", () => clickOpen());
+  document.querySelector(".settings-button")?.addEventListener("click", () => clickSettings());
 
   // Button Action.
   const clickReload = () => vscode.postMessage({ type: "reload" });
   const clickPush = () => vscode.postMessage({ type: "push" });
   const clickPull = () => vscode.postMessage({ type: "pull" });
   const clickOpen = () => vscode.postMessage({ type: "open" });
+  const clickSettings = () => vscode.postMessage({ type: "show-Settings" });
   const clickRunMacro = (e) => {
     const id = e.currentTarget.id;
     const method = document.querySelector(`#method${id}`).textContent;
