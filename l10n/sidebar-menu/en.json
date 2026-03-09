@@ -8,5 +8,6 @@
   "run": "Run",
   "method": "Method : ",
   "args": "Args : ",
-  "noMacro": "No macros."  
+  "noMacro": "No macros.",
+  "pluginSettings": "Settings"
 }
