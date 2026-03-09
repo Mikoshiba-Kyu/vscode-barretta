@@ -3,9 +3,9 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as vscode from "vscode";
-import { callMacro, openBook, pullExcel, pushExcel } from "./api";
+import { callMacro, openBook, pullExcel, pushExcel, showSettings } from "./api";
 import { l } from "./i18n";
-import { log } from "./logger";
+import { log, show } from "./logger";
 import { setRootPath } from "./lib_vscode_api";
 
 /**
@@ -143,9 +143,18 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
           callMacro(data.call, arrayArgs);
           break;
         }
+
+        case "show-Settings": {
+          // Open VSCode settings, navigate to Barretta extension settings
+          // log(`Barretta: Open VSCode settings.`);
+          showSettings();
+          break;
+        }
       }
     });
   }
+
+
 
   private _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
@@ -241,14 +250,15 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
 		<body>
 			<div class="short-cut">
 				<h2>${localeData.commands || 'Commands'}</h2>
-				<button class="push-button">${localeData.push}</button>
-				<button class="pull-button">${localeData.pull}</button>
-				<button class="open-button">${localeData.open}</button>
+				<button class="push-button">${localeData.push || 'Push'}</button>
+				<button class="pull-button">${localeData.pull || 'Pull'}</button>
+				<button class="open-button">${localeData.open || 'Open'}</button>
+				<button class="settings-button">${localeData.pluginSettings || 'Settings'}</button>
 			</div>
 			<div class="macro-list">
 				<div class="macrolist-header">
 					<h2>${localeData.macroRunner || 'Macro Runner'}</h2>
-					<button class="reload-button">${localeData.reload}</button>
+					<button class="reload-button">${localeData.reload || 'Reload'}</button>
 				</div>
 				<div class="macrolist-body">
 					${macroList}

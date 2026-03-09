@@ -3,7 +3,7 @@ import * as path from "node:path";
 import * as encoding from "encoding-japanese";
 import * as iconv from "iconv-lite";
 import * as vscode from "vscode";
-import { l } from "./i18n";
+import { getEncodingConfig, l } from "./i18n";
 import { log } from "./logger";
 import { preCheckCallMacro, preCheckInit, preCheckOpen, preCheckPull, preCheckPush } from "./api_precheck";
 import * as gen from "./generator";
@@ -20,6 +20,8 @@ type CallMacro = (callMethod: string, methodParams?: (string | number | boolean)
 type PushExcel = () => void;
 
 type PullExcel = () => void;
+
+type ShowSettings = () => void;
 
 type RunPS1 = (ps1Params: Ps1Params) => Promise<boolean>;
 
@@ -111,15 +113,8 @@ export const pushExcel: PushExcel = async () => {
     return;
   }
 
-  // Read encoding setting (following encoding / decoding settings based on user settings --> encodingMap)
-  const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("barretta");
-  const vbaEncoding: string = config.get("vbaEncoding") || "Shift-JIS";
-  const encodingMap: Record<string, string> = {
-    "Shift-JIS": "CP932",
-    "GB2312": "GB2312",
-    "ANSI": "win1252"
-  };
-  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
+  // Read encoding setting
+  const { vbaEncoding, targetEncoding } = getEncodingConfig();
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -235,15 +230,8 @@ export const pullExcel: PullExcel = async () => {
     return;
   }
 
-  // read encoding setting (following encoding / decoding settings based on user settings --> encodingMap)
-  const configBarretta: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("barretta");
-  const vbaEncoding: string = configBarretta.get("vbaEncoding") || "Shift-JIS";
-  const encodingMap: Record<string, string> = {
-    "Shift-JIS": "CP932",
-    "GB2312": "GB2312",
-    "ANSI": "win1252",
-  };
-  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
+  // read encoding setting
+  const { vbaEncoding, targetEncoding } = getEncodingConfig();
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -269,7 +257,7 @@ export const pullExcel: PullExcel = async () => {
         const config: vscode.WorkspaceConfiguration =
           vscode.workspace.getConfiguration("barretta");
         const pullIgnoreDocument: boolean =
-          config.get("pull.ignoreDocuments") ?? false;
+          config.get("barretta.pull.ignoreDocuments") ?? false;
 
         const genParams = {
           rootPath,
@@ -353,16 +341,8 @@ export const openBook: OpenBook = async () => {
     return;
   }
 
-  // read encoding setting (following encoding / decoding settings based on user settings --> encodingMap)
-  const config: vscode.WorkspaceConfiguration =
-    vscode.workspace.getConfiguration("barretta");
-  const vbaEncoding: string = config.get("vbaEncoding") || "Shift-JIS";
-  const encodingMap: Record<string, string> = {
-    "Shift-JIS": "CP932",
-    "GB2312": "GB2312",
-    "ANSI": "win1252",
-  };
-  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
+  // read encoding setting
+  const { vbaEncoding, targetEncoding } = getEncodingConfig();
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -447,15 +427,8 @@ export const callMacro: CallMacro = async (callMethod, methodParams?) => {
     return;
   }
 
-  // Read encoding settings (following encoding / decoding settings based on user settings --> encodingMap)
-  const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("barretta");
-  const vbaEncoding: string = config.get("vbaEncoding") || "Shift-JIS";
-  const encodingMap: Record<string, string> = {
-    "Shift-JIS": "CP932",
-    "GB2312": "GB2312",
-    "ANSI": "win1252"
-  };
-  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
+  // Read encoding settings
+  const { vbaEncoding, targetEncoding } = getEncodingConfig();
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -551,3 +524,7 @@ const runPs1: RunPS1 = async (ps1Params): Promise<boolean> => {
   return error === "";
 };
 
+export const showSettings: ShowSettings = async () => {
+  vscode.commands.executeCommand("workbench.action.openSettings", "@Mikoshiba-Kyu:vscode-barretta");
+  log(`Barretta: Show settings.`);
+};
