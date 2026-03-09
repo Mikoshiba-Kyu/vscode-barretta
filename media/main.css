@@ -1,13 +1,20 @@
 button {
-  padding: 0.2rem;
-  width: 4rem;
-  height: 1.5rem;
+  padding: 0.2rem 0.4rem;
+  width: fit-content;
+  min-width: 4rem;
+  height: fit-content;
   font-size: 1rem;
   margin: 0.6rem 1rem 1.4rem 0;
+  border-radius: 0.2rem;
 }
 
 .short-cut {
   white-space: nowrap;
+}
+
+.short-cut button {
+  display: inline-block;
+  margin-right: 0.5rem;
 }
 
 .macro-header {
@@ -15,12 +22,8 @@ button {
   white-space: nowrap;
 }
 
-.macro-header > .run-button {
-  padding: 0.2rem;
-  width: 4rem;
-  height: 1.5rem;
+.macro-header > .run-button button {
   font-size: 1rem;
-  margin: auto 0.8rem auto 0;
 }
 
 .macro-header > h2 {
