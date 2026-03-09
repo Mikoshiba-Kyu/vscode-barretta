@@ -1,5 +1,5 @@
 button {
-  padding: 0.2rem 0.8rem;
+  padding: 0.2rem 0.4rem;
   width: fit-content;
   min-width: 4rem;
   height: fit-content;
@@ -23,6 +23,7 @@ button {
   display: inline-block;
   margin-right: 0.5rem;
 }
+
 
 .macro-header {
   display: flex;
