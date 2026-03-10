@@ -93,6 +93,8 @@ export const initialize: Initialize = async () => {
   }
 };
 
+
+// push code_modules (in code_modules folder, each module/class is a standalone file) to excel (in excel_file folder)
 export const pushExcel: PushExcel = async () => {
   // console.log(`Barretta: Start pushExcel.`);
   log(`Barretta: Start pushExcel.`);
@@ -147,7 +149,7 @@ export const pushExcel: PushExcel = async () => {
           });
         }
 
-        // hot reload: Copy files in code_modules to dist on file saved
+        // Copy files in code_modules to dist on file saved
         const codeModulesPath: string = path.join(rootPath, "code_modules");
         fs.readdirSync(codeModulesPath).map((file) => {
           fs.copyFileSync(path.join(codeModulesPath, file), path.join(distPath, file));
@@ -258,11 +260,11 @@ export const pullExcel: PullExcel = async () => {
       );
 
       try {
-        // Generate push_modules.ps1
+        // Generate pull_modules.ps1
         const config: vscode.WorkspaceConfiguration =
-          vscode.workspace.getConfiguration("pull");
+          vscode.workspace.getConfiguration("barretta");
         const pullIgnoreDocument: boolean =
-          config.get("ignoreDocuments") ?? false;
+          config.get("pull.ignoreDocuments") ?? false;
 
         const genParams = {
           rootPath,
@@ -288,7 +290,7 @@ export const pullExcel: PullExcel = async () => {
 
         if (await runPs1(ps1Params)) {
           const config: vscode.WorkspaceConfiguration =
-            vscode.workspace.getConfiguration("pull");
+            vscode.workspace.getConfiguration("barretta");
 
           if (config.get("encodingToUtf8")) {
             const modulePath = path.join(rootPath, "code_modules");
