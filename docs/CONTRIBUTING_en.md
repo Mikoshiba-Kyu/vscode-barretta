@@ -28,13 +28,13 @@ This document covers everything a contributor needs — from setting up the deve
 
 | Tool | Version | Purpose |
 |---|---|---|
-| [Node.js](https://nodejs.org/) | 22.x | Runtime |
+| [Node.js](https://nodejs.org/) | 18.x | Runtime |
 | [yarn](https://yarnpkg.com/) | Latest | Package manager |
 | [VS Code](https://code.visualstudio.com/) | Latest | Development editor |
 | [Docker](https://www.docker.com/) *(optional)* | Latest | Required for DevContainer only |
 
 > **Note:** Running Barretta's core features (Push / Pull / Macro Runner) requires **Windows + Microsoft Excel**.  
-> However, editing code, building, and linting works on any OS.
+> However, editing code, building, and linting work on any OS.
 
 ---
 
@@ -66,7 +66,6 @@ Using the DevContainer gives you a consistent, pre-configured environment with a
 4. Wait for the container to build and the `postCreateCommand.sh` script to finish.  
    The following happens automatically:
    - `yarn install` installs all dependencies
-   - `lefthook` sets up Git hooks
 
 ---
 
@@ -113,7 +112,7 @@ You can test the extension in a real VS Code window using the Extension Host.
 1. Open the repository in VS Code
 2. Press `F5` (or go to **Run and Debug** → **Run Extension**)
 3. The default build task (`yarn watch` via `tasks.json`) starts automatically, and an **Extension Development Host** window opens with your built extension loaded
-4. In the development host window, open `Ctrl+Shift+P` and test `Barretta:` commands
+4. In the development host window, press `Ctrl+Shift+P` to open the Command Palette and test `Barretta:` commands
 
 > **Debugging tests:** Use the **"Extension Tests"** launch configuration instead.
 
@@ -148,8 +147,8 @@ yarn format
 yarn format:check
 ```
 
-When you open a pull request, GitHub Actions CI automatically verifies formatting, linting, and the build.  
-Please ensure CI passes before requesting a review.
+When you open a pull request, GitHub Actions CI runs linting, code formatting (using `yarn format`), and the build.  
+Formatting in CI is usually auto-corrected rather than causing a failure, so run `yarn format:check` locally and ensure CI passes before requesting a review.
 
 ---
 
