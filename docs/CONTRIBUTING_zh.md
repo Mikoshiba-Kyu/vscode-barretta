@@ -28,7 +28,7 @@
 
 | 工具 | 版本 | 用途 |
 |---|---|---|
-| [Node.js](https://nodejs.org/) | 22.x | 运行时 |
+| [Node.js](https://nodejs.org/) | 18.x | 运行时 |
 | [yarn](https://yarnpkg.com/) | 最新版 | 包管理器 |
 | [VS Code](https://code.visualstudio.com/) | 最新版 | 开发编辑器 |
 | [Docker](https://www.docker.com/)（可选） | 最新版 | 仅使用 DevContainer 时需要 |
@@ -66,7 +66,6 @@
 4. 等待容器构建完成，并等待 `postCreateCommand.sh` 脚本执行完毕。  
    以下操作将自动完成：
    - 通过 `yarn install` 安装所有依赖
-   - 通过 `lefthook` 配置 Git 钩子
 
 ---
 
@@ -148,8 +147,8 @@ yarn format
 yarn format:check
 ```
 
-提交 Pull Request 后，GitHub Actions CI 会自动验证格式、Lint 和构建。  
-请确保 CI 通过后再请求代码审查。
+提交 Pull Request 后，GitHub Actions CI 会自动运行格式化、Lint 和构建任务（其中格式化步骤执行的是 `yarn format`，会尝试自动修复格式问题）。  
+请确保 CI 通过后再请求代码审查，并在本地执行 `yarn format:check` 以确认不存在未修复的格式问题。
 
 ---
 
