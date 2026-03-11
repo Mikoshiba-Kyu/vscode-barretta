@@ -27,7 +27,7 @@
     "workspaceContains:barretta-core"
   ],
   "main": "./dist/extension.js",
-  "l10n": "./l10n",
+  "l10n": "./l10n/package",
   "contributes": {
     "configuration": [
       {
@@ -123,7 +123,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "yarn clean-nls && yarn copy-nls && yarn package",
+    "vscode:prepublish": "yarn package",
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
@@ -134,10 +134,8 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "format:check": "biome format --check .",
-    "test": "node ./out/test/runTest.js",
-    "copy-nls": "shx cp \"l10n/package/package.nls.json\" . && shx cp \"l10n/package/package.nls.ja.json\" . && shx cp \"l10n/package/package.nls.zh-cn.json\" .",
-    "clean-nls": "shx rm -f package.nls.json package.nls.ja.json package.nls.zh-cn.json"
-  },
+    "test": "node ./out/test/runTest.js"
+    },
   "devDependencies": {
     "@biomejs/biome": "2.0.5",
     "@types/encoding-japanese": "^2.0.1",

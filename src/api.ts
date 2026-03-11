@@ -283,7 +283,7 @@ export const pullExcel: PullExcel = async () => {
           const config: vscode.WorkspaceConfiguration =
             vscode.workspace.getConfiguration("barretta");
 
-          if (config.get("barretta.pull.encodingToUtf8")) {
+          if (config.get("pull.encodingToUtf8")) {
 
             const modulePath = path.join(rootPath, "code_modules");
             fs.readdirSync(modulePath).map((file) => {

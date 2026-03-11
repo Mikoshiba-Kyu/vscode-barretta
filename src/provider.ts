@@ -5,7 +5,7 @@ import * as path from "node:path";
 import * as vscode from "vscode";
 import { callMacro, openBook, pullExcel, pushExcel, showSettings } from "./api";
 import { l } from "./i18n";
-import { log, show } from "./logger";
+import { log } from "./logger";
 import { setRootPath } from "./lib_vscode_api";
 
 /**

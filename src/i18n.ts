@@ -121,7 +121,7 @@ const encodingMap: Record<string, string> = {
  */
 export function getEncodingSettings(): string {
   const config = vscode.workspace.getConfiguration("barretta");
-  return config.get<string>("vbaEncoding") || "Shift-JIS";
+  return config.get("vbaEncoding") || "Shift-JIS";
 }
 
 /**
