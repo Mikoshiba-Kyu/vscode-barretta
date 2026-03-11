@@ -254,8 +254,7 @@ export const pullExcel: PullExcel = async () => {
 
       try {
         // Generate pull_modules.ps1
-        const config: vscode.WorkspaceConfiguration =
-          vscode.workspace.getConfiguration("barretta");
+        const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("barretta");
         const pullIgnoreDocument: boolean = config.get("pull.ignoreDocuments") ?? false;
 
         const genParams = {
@@ -284,7 +283,8 @@ export const pullExcel: PullExcel = async () => {
           const config: vscode.WorkspaceConfiguration =
             vscode.workspace.getConfiguration("barretta");
 
-          if (config.get("pull.encodingToUtf8")) {
+          if (config.get("barretta.pull.encodingToUtf8")) {
+
             const modulePath = path.join(rootPath, "code_modules");
             fs.readdirSync(modulePath).map((file) => {
               if (path.extname(file) !== ".frx") {

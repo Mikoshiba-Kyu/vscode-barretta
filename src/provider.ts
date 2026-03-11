@@ -154,6 +154,8 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
     });
   }
 
+
+
   private _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     // const i18nScriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "media", "i18n.js"));

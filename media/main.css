@@ -24,6 +24,17 @@ button {
   margin-right: 0.5rem;
 }
 
+.short-cut > .short-cut-buttons {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.short-cut button {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
 
 .macro-header {
   display: flex;
