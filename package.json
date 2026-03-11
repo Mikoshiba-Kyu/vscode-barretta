@@ -27,6 +27,7 @@
     "workspaceContains:barretta-core"
   ],
   "main": "./dist/extension.js",
+  "l10n": "./l10n/package",
   "contributes": {
     "configuration": [
       {
@@ -34,33 +35,43 @@
         "properties": {
           "barretta.hotReload": {
             "type": "boolean",
-            "description": "Code_Modulesのファイル更新時に自動的にPushします。",
+            "description": "%config.hotReload.description%",
             "default": true
           },
-          "push.ignoreDocuments": {
+          "barretta.push.ignoreDocuments": {
             "type": "boolean",
-            "description": "ブックやシートなどのドキュメントモジュールを除外します。 ※This version does not work yet.",
+            "description": "%config.pushIgnoreDocuments.description%",
             "default": true
           },
-          "pull.ignoreDocuments": {
+          "barretta.pull.ignoreDocuments": {
             "type": "boolean",
-            "description": "ブックやシートなどのドキュメントモジュールを除外します。",
+            "description": "%config.pullIgnoreDocuments.description%",
             "default": true
           },
-          "pull.encodingToUtf8": {
+          "barretta.pull.encodingToUtf8": {
             "type": "boolean",
-            "description": "テキストファイルをUTF-8でExportします。",
+            "description": "%config.encodingToUtf8.description%",
             "default": true
           },
-          "vbaLint.enable": {
+          "barretta.vbaLint.enable": {
             "type": "boolean",
-            "description": "VBALintを有効化します。 ※This version does not work yet.",
+            "description": "%config.vbaLintEnable.description%",
             "default": true
           },
-          "vbaLint.processOnSave": {
+          "barretta.vbaLint.processOnSave": {
             "type": "boolean",
-            "description": "コードファイルの保存時にVBALintを実行します。 ※This version does not work yet.",
+            "description": "%config.vbaLintProcessOnSave.description%",
             "default": false
+          },
+          "barretta.vbaEncoding": {
+            "type": "string",
+            "enum": [
+              "Shift-JIS",
+              "GB2312",
+              "ANSI"
+            ],
+            "default": "Shift-JIS",
+            "description": "%config.vbaEncoding.description%"
           }
         }
       }
@@ -68,19 +79,19 @@
     "commands": [
       {
         "command": "vscode-barretta.init",
-        "title": "Barretta: Init"
+        "title": "%command.init.title%"
       },
       {
         "command": "vscode-barretta.push",
-        "title": "Barretta: Push"
+        "title": "%command.push.title%"
       },
       {
         "command": "vscode-barretta.pull",
-        "title": "Barretta: Pull"
+        "title": "%command.pull.title%"
       },
       {
         "command": "vscode-barretta.open",
-        "title": "Barretta: Open"
+        "title": "%command.open.title%"
       }
     ],
     "keybindings": [
@@ -106,7 +117,7 @@
         {
           "type": "webview",
           "id": "vscode-barretta.launcher",
-          "name": "Barretta-Launcher"
+          "name": "%view.launcher.name%"
         }
       ]
     }
@@ -124,7 +135,7 @@
     "format": "biome format --write .",
     "format:check": "biome format --check .",
     "test": "node ./out/test/runTest.js"
-  },
+    },
   "devDependencies": {
     "@biomejs/biome": "2.0.5",
     "@types/encoding-japanese": "^2.0.1",
@@ -141,9 +152,12 @@
     "webpack-cli": "^5.0.0"
   },
   "dependencies": {
+    "@vscode/l10n": "^0.0.18",
     "child-process": "^1.0.2",
     "encoding-japanese": "^2.0.0",
     "iconv-lite": "^0.6.3",
+    "shx": "^0.4.0",
     "util": "^0.12.4"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
