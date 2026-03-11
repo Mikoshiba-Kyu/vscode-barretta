@@ -38,35 +38,38 @@
             "description": "%config.hotReload.description%",
             "default": true
           },
-          "push.ignoreDocuments": {
+          "barretta.push.ignoreDocuments": {
             "type": "boolean",
             "description": "%config.pushIgnoreDocuments.description%",
             "default": true
           },
-          "pull.ignoreDocuments": {
+          "barretta.pull.ignoreDocuments": {
             "type": "boolean",
             "description": "%config.pullIgnoreDocuments.description%",
             "default": true
           },
-          "pull.encodingToUtf8": {
+          "barretta.pull.encodingToUtf8": {
             "type": "boolean",
             "description": "%config.encodingToUtf8.description%",
             "default": true
           },
-          "vbaLint.enable": {
+          "barretta.vbaLint.enable": {
             "type": "boolean",
             "description": "%config.vbaLintEnable.description%",
             "default": true
           },
-          "vbaLint.processOnSave": {
+          "barretta.vbaLint.processOnSave": {
             "type": "boolean",
             "description": "%config.vbaLintProcessOnSave.description%",
             "default": false
-          }
-          ,
+          },
           "barretta.vbaEncoding": {
             "type": "string",
-            "enum": ["Shift-JIS", "GB2312", "ANSI"],
+            "enum": [
+              "Shift-JIS",
+              "GB2312",
+              "ANSI"
+            ],
             "default": "Shift-JIS",
             "description": "%config.vbaEncoding.description%"
           }
@@ -132,8 +135,8 @@
     "format": "biome format --write .",
     "format:check": "biome format --check .",
     "test": "node ./out/test/runTest.js",
-    "copy-nls": "copy \"l10n\\package\\package.nls.json\" . && copy \"l10n\\package\\package.nls.ja.json\" . && copy \"l10n\\package\\package.nls.zh-cn.json\" .",
-    "clean-nls": "del package.nls.json package.nls.ja.json package.nls.zh-cn.json 2>nul"
+    "copy-nls": "shx cp \"l10n/package/package.nls.json\" . && shx cp \"l10n/package/package.nls.ja.json\" . && shx cp \"l10n/package/package.nls.zh-cn.json\" .",
+    "clean-nls": "shx rm -f package.nls.json package.nls.ja.json package.nls.zh-cn.json"
   },
   "devDependencies": {
     "@biomejs/biome": "2.0.5",
@@ -155,6 +158,7 @@
     "child-process": "^1.0.2",
     "encoding-japanese": "^2.0.0",
     "iconv-lite": "^0.6.3",
+    "shx": "^0.4.0",
     "util": "^0.12.4"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"

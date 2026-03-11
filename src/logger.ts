@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-// Barretta log output ro VSCode channel window
+// Barretta log output to VSCode channel window
 let outputChannel: vscode.OutputChannel | undefined;
 
 /**

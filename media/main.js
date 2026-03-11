@@ -1,13 +1,6 @@
 window.addEventListener("DOMContentLoaded", () => {
   const vscode = acquireVsCodeApi();
 
-  const i18n = {};
-
-  // Get i18n from window object
-  if (i18n.length === 0) {
-    vscode.postMessage({ type: "loadLocale" });
-  };
-
   window.addEventListener("message", (event) => {
     const data = event.data;
     switch (data.type) {
@@ -95,7 +88,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       // macro-header > h2
       const macroTitle = document.createElement("h2");
-      macroTitle.textContent = macro.name;
+      macroTitle.textContent = macro.title;
       document.querySelector(`#macro-header${index}`).appendChild(macroTitle);
 
       // macro-params

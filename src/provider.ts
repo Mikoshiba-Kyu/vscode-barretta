@@ -194,16 +194,16 @@ export class BarrettaViewProvider implements vscode.WebviewViewProvider {
 					<div id="macro-card${index}" class="macro-card">
 						<hr>
 						<div id="macro-header${index}" class="macro-header">
-						<button id="${index}" class="run-button">${localeData.run}</button>
+						<button id="${index}" class="run-button">${localeData.run || "Run"}</button>
 							<h2>${macro.title}</h2>
 						</div>
 						<div id="macro-params${index}" class="macro-params">
 							<div id="macro-method${index}" class="macro-method">
-								<div class="label">${localeData.method}</div>
+								<div class="label">${localeData.method || "Method :"}</div>
 								<h3 id="method${index}">${macro.call}</h3>
 							</div>
 							<div id="macro-args${index}" class="macro-args">
-								<div class="label">${localeData.args}</div>
+								<div class="label">${localeData.args || "Args :"}</div>
 								<h3 id="args${index}">${fixArgs}</h3>
 							</div>
 						</div>

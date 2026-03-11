@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { init, openbook, pull, push } from "./commands";
 import { onSavedCodeFile } from "./events";
 import { BarrettaViewProvider } from "./provider";
-import { log } from "./logger";
+import { log, dispose } from "./logger";
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -23,6 +23,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-  // No cleanup required
+  dispose();
 }
 

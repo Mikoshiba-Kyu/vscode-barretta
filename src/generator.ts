@@ -24,7 +24,7 @@ type Ps1GenerateParams = {
 };
 
 /**
- * ExcelBookを開くPowershellスクリプトを返します�?
+ * ExcelBookを開くPowershellスクリプトを返します。
  * @param genParams
  * @returns
  */

@@ -135,7 +135,7 @@ export const pushExcel: PushExcel = async () => {
       const ps1FilePath = path.join(rootPath, "barretta-core/scripts/push_modules.ps1");
 
       try {
-        // dist フォルダがなければ再作成する。ある場合は中身を空にす�?
+        // dist フォルダがなければ再作成する。ある場合は中身を空にする
         const distPath: string = path.join(rootPath, "barretta-core/dist");
         if (!fs.existsSync(distPath)) {
           fs.mkdirSync(distPath);
@@ -152,7 +152,10 @@ export const pushExcel: PushExcel = async () => {
         // Copy files in code_modules to dist on file saved
         const codeModulesPath: string = path.join(rootPath, "code_modules");
         fs.readdirSync(codeModulesPath).map((file) => {
-          fs.copyFileSync(path.join(codeModulesPath, file), path.join(distPath, file));
+          fs.copyFileSync(
+            path.join(codeModulesPath, file),
+            path.join(distPath, file),
+          );
           // console.log(`Barretta: File Copied to dist. : ${file}`);
           log(`Barretta: File Copied to dist. : ${file}`);
         });
@@ -193,7 +196,9 @@ export const pushExcel: PushExcel = async () => {
         };
 
         if (await runPs1(ps1Params)) {
-          vscode.window.showInformationMessage(`Barretta: ${l("push.complete")}`);
+          vscode.window.showInformationMessage(
+            `Barretta: ${l("push.complete")}`,
+          );
           // console.log(`Barretta: Complete pushExcel.`);
           log(`Barretta: Complete pushExcel.`);
         } else {
@@ -292,7 +297,7 @@ export const pullExcel: PullExcel = async () => {
           const config: vscode.WorkspaceConfiguration =
             vscode.workspace.getConfiguration("barretta");
 
-          if (config.get("pull.encodingToUtf8")) {
+          if (config.get("barretta.pull.encodingToUtf8")) {
             const modulePath = path.join(rootPath, "code_modules");
             fs.readdirSync(modulePath).map((file) => {
               if (path.extname(file) !== ".frx") {
@@ -406,7 +411,8 @@ export const openBook: OpenBook = async () => {
           vscode.window.showInformationMessage(
             `Barretta: ${l("open.complete")}`,
           );
-          console.log(`Barretta: Complete openBook.`);
+          // console.log(`Barretta: Complete openBook.`);
+          log(`Barretta: Complete openBook.`);
         } else {
           vscode.window.showErrorMessage(`Barretta: ${l("open.failed")}`);
           // console.log(`Barretta: Failed openBook.`);
