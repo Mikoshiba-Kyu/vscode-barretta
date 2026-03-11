@@ -524,6 +524,6 @@ const runPs1: RunPS1 = async (ps1Params): Promise<boolean> => {
 };
 
 export const showSettings: ShowSettings = async () => {
-  vscode.commands.executeCommand("workbench.action.openSettings", "@Mikoshiba-Kyu:vscode-barretta");
+  vscode.commands.executeCommand("workbench.action.openSettings", "@ext:Mikoshiba-Kyu.vscode-barretta");
   log(`Barretta: Show settings.`);
 };
