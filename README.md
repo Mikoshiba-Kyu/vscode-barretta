@@ -2,6 +2,8 @@
 
 <img src="https://github.com/Mikoshiba-Kyu/vscode-barretta/blob/main/docs/image/largeicon_750x256.png?raw=true" width="450px">
 
+[English](README.en.md) | [中文](README.cn.md)
+
 ## Barretta とは
 
 Barretta は ExcelVBA 開発者のための拡張機能です。

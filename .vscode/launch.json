@@ -5,6 +5,7 @@
 {
   "version": "0.2.0",
   "configurations": [
+
     {
       "name": "Run Extension",
       "type": "extensionHost",
@@ -19,10 +20,26 @@
       "request": "launch",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test/suite/index"
+        "--extensionTestsPath=${workspaceFolder}/out/test/suite/index.js"
       ],
       "outFiles": ["${workspaceFolder}/out/**/*.js", "${workspaceFolder}/dist/**/*.js"],
       "preLaunchTask": "tasks: watch-tests"
+    },
+    // add a debug configuration for testing extension without running test cases
+    {
+      "name": "Extension debug",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        // "--extensionTestsPath=${workspaceFolder}/out/test/suite/index.js"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/out/**/*.js",
+        "${workspaceFolder}/dist/**/*.js"
+      ],
+      "sourceMaps": true,
+      "preLaunchTask": "tasks: watch"
     }
   ]
 }

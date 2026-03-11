@@ -5,3 +5,9 @@ node_modules
 *.vsix
 *.code-workspace
 dev
+AGENTS.md
+
+# Copied from l10n/package/ during build
+package.nls.json
+package.nls.ja.json
+package.nls.zh-cn.json
