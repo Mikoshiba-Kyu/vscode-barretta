@@ -59,6 +59,9 @@ yarn install --global @github/copilot
 if ! grep -q 'export PATH="$HOME/.yarn/bin:$PATH"' ~/.zshrc; then
     echo 'export PATH="$HOME/.yarn/bin:$PATH"' >> ~/.zshrc
 fi
+if ! grep -q 'export PATH="./node_modules/.bin:$PATH"' ~/.zshrc; then
+    echo 'export PATH="./node_modules/.bin:$PATH"' >> ~/.zshrc
+fi
 echo "✅ GitHub Copilot CLIのインストールが完了しました"
 
 # 4-2. Copilot CLI認証情報の復元
