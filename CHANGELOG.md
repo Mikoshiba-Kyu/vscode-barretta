@@ -1,5 +1,16 @@
 # Change Log
 
+## 2026/03/28
+
+**ver 1.0.3**
+
+- [Add] Added multi-language support (Japanese, Simplified Chinese, English) for settings, commands, and input popups. The language switches automatically based on the user's VSCode interface language. (PR #10)
+- [Add] Added encoding specification feature. The conversion encoding can now be configured in the extension settings. Supported encodings: SHIFT-JIS, GB2312, ANSI. (PR #10)
+- [Add] Added `logger` module to output extension log information to the VSCode message window. (PR #10)
+- [Add] Added a "Settings" button to the sidebar that opens the extension settings in VSCode. (PR #11)
+- [Change] Improved sidebar CSS styles: buttons now adapt width/height to font length and have rounded corners. (PR #11)
+- [Docs] Added CONTRIBUTING.md in Japanese, English, and Chinese (Simplified). (PR #12, #13)
+
 ## 2023/02/02
 
 **ver 1.0.2**
