@@ -2,6 +2,8 @@
 
 <img src="https://github.com/Mikoshiba-Kyu/vscode-barretta/blob/main/docs/image/largeicon_750x256.png?raw=true" width="450px">
 
+[日本語](README.md) | [English](README.en.md)
+
 ## Barretta 是什么
 
 Barretta 是为 Excel VBA 开发者设计的扩展插件。
@@ -78,3 +80,19 @@ Barretta 是为 Excel VBA 开发者设计的扩展插件。
 ### 关于 VBA LSP 开发
 
 如果您能够开发可与 VSCode 一起使用的 VBA LSP，我们将不胜感激。
+
+### 本地化
+
+本插件支持根据 VSCode 界面的显示语言（Display Language）自动切换插件语言。若当前语言不存在，则默认显示英文内容
+
+欢迎您为本项目贡献本地化语言，本地化说明如下：
+
+- LOCALE_ID = VSCode 规定的本地化语言代码，参考： ([VSCode-locales 文档](https://code.visualstudio.com/docs/configure/locales#_available-locales))\
+  如：`en`、`zh-cn`、`ja` 代表 -- 英文（美国）、简体中文、日语
+- 所有本地化配置文件保存在`/src/l10n`路径下
+    - 插件状态输出弹窗，存储于：`bundle.l10n.<LOCALE_ID>.json`
+    - 插件侧边栏（sidebar）窗口相关内容，存储于：`sidebar-menu/<LOCALE_ID>.json`
+    - VSCode设置项、菜单命令、输出信息相关内容，存储于：`package.l10n.<LOCALE_ID>.json`
+- 默认语言为英文。
+- 仅对于 sidebar-menu 的本地化文件，英文文件需要写明`<LOCALE_ID>`。\
+  对于 package 和 bundle 的本地化文件，英文文件不需要写明`<LOCALE_ID>`
