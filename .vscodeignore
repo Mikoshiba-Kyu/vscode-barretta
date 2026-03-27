@@ -3,6 +3,8 @@
 out/**
 node_modules/**
 src/**
+l10n/package/**
+locales/**
 .gitignore
 .yarnrc
 webpack.config.js

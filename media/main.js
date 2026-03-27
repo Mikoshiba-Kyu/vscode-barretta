@@ -6,10 +6,12 @@ window.addEventListener("DOMContentLoaded", () => {
     switch (data.type) {
       case "reloadLauncher": {
         reloadLauncher(data);
+        console.log("Launcher reloaded with new macro data.");
         break;
       }
     }
   });
+
 
   // Set Button Events.
   document.querySelector(".reload-button").addEventListener("click", () => clickReload());
@@ -24,8 +26,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const clickOpen = () => vscode.postMessage({ type: "open" });
   const clickRunMacro = (e) => {
     const id = e.currentTarget.id;
-    method = document.querySelector(`#method${id}`).textContent;
-    args = document.querySelector(`#args${id}`).textContent;
+    const method = document.querySelector(`#method${id}`).textContent;
+    const args = document.querySelector(`#args${id}`).textContent;
 
     vscode.postMessage({
       type: "runMacro",
@@ -43,12 +45,24 @@ window.addEventListener("DOMContentLoaded", () => {
   const reloadLauncher = (data) => {
     document.querySelector(".macrolist-body").remove();
 
-    jsonData = JSON.parse(data.jsonText);
+    const jsonData = JSON.parse(data.jsonText);
+
+    // Get locale data
+    const localeData = JSON.parse(document.querySelector("#webview-locale").textContent);
+    // console.log("Locale data used for reloading launcher:", localeData);
 
     // macrolist-body
     const macrolistBody = document.createElement("div");
     macrolistBody.className = "macrolist-body";
     document.querySelector(".macro-list").appendChild(macrolistBody);
+
+    // if macro list is empty, show "No macros" message
+    if (jsonData.macros.length === 0) {
+      const noMacrosMessage = document.createElement("div");
+      noMacrosMessage.className = "no-macros";
+      noMacrosMessage.textContent = localeData.noMacro || "No macros.";
+      document.querySelector(`.macrolist-body`).appendChild(noMacrosMessage);
+    }
 
     jsonData.macros.forEach((macro, index) => {
       // macro-card
@@ -68,7 +82,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const runButton = document.createElement("button");
       runButton.id = `${index}`;
       runButton.className = "run-button";
-      runButton.textContent = "Run";
+      runButton.textContent = localeData.run || "Run";
       runButton.onclick = clickRunMacro;
       document.querySelector(`#macro-header${index}`).appendChild(runButton);
 
@@ -91,7 +105,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const methodLabel = document.createElement("div");
       methodLabel.className = "label";
-      methodLabel.textContent = "Method : ";
+      methodLabel.textContent = localeData.method || "Method : ";
       document.querySelector(`#macro-method${index}`).appendChild(methodLabel);
 
       const methodText = document.createElement("h3");
@@ -107,7 +121,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const argsLabel = document.createElement("div");
       argsLabel.className = "label";
-      argsLabel.textContent = "Args : ";
+      argsLabel.textContent = localeData.args || "Args : ";
       document.querySelector(`#macro-args${index}`).appendChild(argsLabel);
 
       const argsText = document.createElement("h3");

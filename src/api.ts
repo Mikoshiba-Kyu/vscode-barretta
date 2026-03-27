@@ -3,6 +3,8 @@ import * as path from "node:path";
 import * as encoding from "encoding-japanese";
 import * as iconv from "iconv-lite";
 import * as vscode from "vscode";
+import { l } from "./i18n";
+import { log } from "./logger";
 import { preCheckCallMacro, preCheckInit, preCheckOpen, preCheckPull, preCheckPush } from "./api_precheck";
 import * as gen from "./generator";
 import { setRootPath } from "./lib_vscode_api";
@@ -27,70 +29,97 @@ type Ps1Params = {
 };
 
 export const initialize: Initialize = async () => {
-  console.log(`Barretta: Start initialize.`);
+  // console.log(`Barretta: Start initialize.`);
+  log(`Barretta: Start initialize.`);
 
   const rootPath: string | undefined = await setRootPath();
 
   if (rootPath === undefined) {
-    console.log(`Barretta: Exit initialize.`);
+    // console.log(`Barretta: Exit initialize.`);
+    log(`Barretta: Exit initialize.`);
     return;
   }
 
   if (!preCheckInit(rootPath)) {
-    console.log(`Barretta: Failed preCheckInit.`);
+    // console.log(`Barretta: Failed preCheckInit.`);
+    log(`Barretta: Failed preCheckInit.`);
     return;
   }
 
   try {
     fs.appendFileSync(path.join(rootPath, ".gitignore"), gen.generateGitignore());
-    console.log("Barretta: CreateFile : .gitignore");
+    // console.log("Barretta: CreateFile : .gitignore");
+    log(`Barretta: CreateFile : .gitignore`);
 
     fs.appendFileSync(path.join(rootPath, "barretta.code-workspace"), gen.generateWorkspace());
-    console.log("Barretta: CreateFile : barretta.code-workspace");
+    // console.log("Barretta: CreateFile : barretta.code-workspace");
+    log(`Barretta: CreateFile : barretta.code-workspace`);
 
     fs.mkdirSync(path.join(rootPath, "excel_file"));
-    console.log("Barretta: CreateFolder : excel_file");
+    // console.log("Barretta: CreateFolder : excel_file");
+    log(`Barretta: CreateFolder : excel_file`);
 
     fs.mkdirSync(path.join(rootPath, "code_modules"));
-    console.log("Barretta: CreateFolder : code_modules");
+    // console.log("Barretta: CreateFolder : code_modules");
+    log(`Barretta: CreateFolder : code_modules`);
 
     fs.mkdirSync(path.join(rootPath, "barretta-core"));
-    console.log("Barretta: CreateFolder : barretta-core");
+    // console.log("Barretta: CreateFolder : barretta-core");
+    log(`Barretta: CreateFolder : barretta-core`);
 
     fs.mkdirSync(path.join(rootPath, "barretta-core/scripts"));
-    console.log("Barretta: CreateFolder : scripts");
+    // console.log("Barretta: CreateFolder : scripts");
+    log(`Barretta: CreateFolder : scripts`);
 
     fs.mkdirSync(path.join(rootPath, "barretta-core/dist"));
-    console.log("Barretta: CreateFolder : dist");
+    // console.log("Barretta: CreateFolder : dist");
+    log(`Barretta: CreateFolder : dist`);
 
     fs.mkdirSync(path.join(rootPath, "barretta-core/types"));
-    console.log("Barretta: CreateFolder : types");
+    // console.log("Barretta: CreateFolder : types");
+    log(`Barretta: CreateFolder : types`);
 
     fs.appendFileSync(path.join(rootPath, "barretta-launcher.json"), gen.generateBarrettaLauncher());
-    console.log("Barretta: CreateFile : barretta-launcher.json");
+    // console.log("Barretta: CreateFile : barretta-launcher.json");
+    log(`Barretta: CreateFile : barretta-launcher.json`);
 
-    vscode.window.showInformationMessage("Barretta: フォルダの初期化が完了しました。");
-    console.log(`Barretta: Complete initialize.`);
+    vscode.window.showInformationMessage(`Barretta: ${l("init.complete")}`);
+    // console.log(`Barretta: Complete initialize.`);
+    log(`Barretta: Complete initialize.`);
   } catch {
-    vscode.window.showErrorMessage("Barretta: フォルダの初期化が失敗しました。");
-    console.log(`Barretta: Failed initialize.`);
+    vscode.window.showErrorMessage(`Barretta: ${l("init.failed")}`);
+    // console.log(`Barretta: Failed initialize.`);
+    log(`Barretta: Failed initialize.`);
   }
 };
 
+
+// push code_modules (in code_modules folder, each module/class is a standalone file) to excel (in excel_file folder)
 export const pushExcel: PushExcel = async () => {
-  console.log(`Barretta: Start pushExcel.`);
+  // console.log(`Barretta: Start pushExcel.`);
+  log(`Barretta: Start pushExcel.`);
 
   const rootPath: string | undefined = await setRootPath();
-
   if (rootPath === undefined) {
-    console.log(`Barretta: Exit pushExcel.`);
+    // console.log(`Barretta: Exit pushExcel.`);
+    log(`Barretta: Exit pushExcel.`);
+    return;
+  }
+  if (!preCheckPush(rootPath)) {
+    // console.log(`Barretta: Failed preCheckPush.`);
+    log(`Barretta: Failed preCheckPush.`);
     return;
   }
 
-  if (!preCheckPush(rootPath)) {
-    console.log(`Barretta: Failed preCheckPush.`);
-    return;
-  }
+  // Read encoding setting (following encoding / decoding settings based on user settings --> encodingMap)
+  const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("barretta");
+  const vbaEncoding: string = config.get("vbaEncoding") || "Shift-JIS";
+  const encodingMap: Record<string, string> = {
+    "Shift-JIS": "CP932",
+    "GB2312": "GB2312",
+    "ANSI": "win1252"
+  };
+  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -99,7 +128,7 @@ export const pushExcel: PushExcel = async () => {
   const fileName: string = excelFileList[0];
 
   vscode.window.withProgress(
-    { location: vscode.ProgressLocation.Notification, title: "Barretta: Push" },
+    { location: vscode.ProgressLocation.Notification, title: l("progress.push") },
     async (progress) => {
       progress.report({ message: "Working...." });
 
@@ -110,29 +139,36 @@ export const pushExcel: PushExcel = async () => {
         const distPath: string = path.join(rootPath, "barretta-core/dist");
         if (!fs.existsSync(distPath)) {
           fs.mkdirSync(distPath);
-          console.log(`Barretta: Recreate [dist] folder.`);
+          // console.log(`Barretta: Recreate [dist] folder.`);
+          log(`Barretta: Recreate [dist] folder.`);
         } else {
           fs.readdirSync(distPath).map((file) => {
             fs.unlinkSync(path.join(distPath, file));
-            console.log(`Barretta: Delete ${file}.`);
+            // console.log(`Barretta: Delete ${file}.`);
+            log(`Barretta: Delete ${file}.`);
           });
         }
 
-        // code_modules 内のファイルを dist にコピーする
+        // Copy files in code_modules to dist on file saved
         const codeModulesPath: string = path.join(rootPath, "code_modules");
         fs.readdirSync(codeModulesPath).map((file) => {
-          fs.copyFileSync(path.join(codeModulesPath, file), path.join(distPath, file));
-          console.log(`Barretta: File Copied to dist. : ${file}`);
+          fs.copyFileSync(
+            path.join(codeModulesPath, file),
+            path.join(distPath, file),
+          );
+          // console.log(`Barretta: File Copied to dist. : ${file}`);
+          log(`Barretta: File Copied to dist. : ${file}`);
         });
 
-        // dist のファイルで UTF-8 のものを SJIS に変換する (frxファイルを除く)
+        // dist file encoding conversion (except for frx files) (using custom encoding setting)
         fs.readdirSync(distPath).map((file) => {
           if (path.extname(file) !== ".frx") {
             const txtData: Buffer = fs.readFileSync(path.join(distPath, file));
             if (encoding.detect(txtData) === "UTF8") {
-              const buf: Buffer = iconv.encode(String(txtData), "CP932");
+              const buf: Buffer = iconv.encode(String(txtData), targetEncoding);
               fs.writeFileSync(path.join(distPath, file), buf);
-              console.log(`Barretta: ${file} encoding to Shift-JIS.`);
+              // console.log(`Barretta: ${file} encoding to ${vbaEncoding}.`);
+              log(`Barretta: ${file} encoding to ${vbaEncoding}.`);
             }
           }
         });
@@ -143,52 +179,71 @@ export const pushExcel: PushExcel = async () => {
           fileName,
         };
         fs.appendFileSync(ps1FilePath, gen.generatePushPs1(genParams));
-        console.log("Barretta: push_modules.ps1 Created.");
+        // console.log("Barretta: push_modules.ps1 Created.");
+        log(`Barretta: push_modules.ps1 Created.`);
 
-        // ps1ファイルをShift-JISに変換
+        // ps1 file encoding conversion (using custom encoding setting)
         const txtData: Buffer = fs.readFileSync(ps1FilePath);
-        const buf: Buffer = iconv.encode(String(txtData), "CP932");
+        const buf: Buffer = iconv.encode(String(txtData), targetEncoding);
         fs.writeFileSync(ps1FilePath, buf);
-        console.log(`Barretta: push_modules.ps1 encoding to Shift-JIS.`);
+        // console.log(`Barretta: push_modules.ps1 encoding to ${vbaEncoding}.`);
+        log(`Barretta: push_modules.ps1 encoding to ${vbaEncoding}.`);
 
-        // push_modules.ps1 を実行する
+        // push_modules.ps1
         const ps1Params: Ps1Params = {
           execType: "-File",
           ps1FilePath,
         };
 
         if (await runPs1(ps1Params)) {
-          vscode.window.showInformationMessage(`Barretta: ExcelファイルにImportしました。`);
-          console.log(`Barretta: Complete pushExcel.`);
+          vscode.window.showInformationMessage(
+            `Barretta: ${l("push.complete")}`,
+          );
+          // console.log(`Barretta: Complete pushExcel.`);
+          log(`Barretta: Complete pushExcel.`);
         } else {
-          vscode.window.showErrorMessage(`Barretta: コードモジュールのImportが失敗しました。`);
-          console.log(`Barretta: Failed pushExcel.`);
+          vscode.window.showErrorMessage(`Barretta: ${l("push.failed")}`);
+          // console.log(`Barretta: Failed pushExcel.`);
+          log(`Barretta: Failed pushExcel.`);
         }
       } catch (e) {
-        console.error(`Barretta: unknown error has occured.`);
-        console.error(e);
+        // console.error(`Barretta: unknown error has occured.`);
+        // console.error(e);
+        log(`Barretta: unknown error has occured.`);
+        log(String(e));
       } finally {
         fs.unlinkSync(ps1FilePath);
-        console.log(`Barretta: push_modules.ps1 deleted.`);
+        // console.log(`Barretta: push_modules.ps1 deleted.`);
+        log(`Barretta: push_modules.ps1 deleted.`);
       }
     },
   );
 };
 
 export const pullExcel: PullExcel = async () => {
-  console.log(`Barretta: Start pullExcel.`);
+  log(`Barretta: Start pullExcel.`);
 
   const rootPath: string | undefined = await setRootPath();
-
   if (rootPath === undefined) {
-    console.log(`Barretta: Exit pullExcel.`);
+    // console.log(`Barretta: Exit pullExcel.`);
+    log(`Barretta: Exit pullExcel.`);
+    return;
+  }
+  if (!preCheckPull(rootPath)) {
+    // console.log(`Barretta: Failed preCheckPull.`);
+    log(`Barretta: Failed preCheckPull.`);
     return;
   }
 
-  if (!preCheckPull(rootPath)) {
-    console.log(`Barretta: Failed preCheckPull.`);
-    return;
-  }
+  // read encoding setting (following encoding / decoding settings based on user settings --> encodingMap)
+  const configBarretta: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("barretta");
+  const vbaEncoding: string = configBarretta.get("vbaEncoding") || "Shift-JIS";
+  const encodingMap: Record<string, string> = {
+    "Shift-JIS": "CP932",
+    "GB2312": "GB2312",
+    "ANSI": "win1252",
+  };
+  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -197,16 +252,24 @@ export const pullExcel: PullExcel = async () => {
   const fileName: string = excelFileList[0];
 
   vscode.window.withProgress(
-    { location: vscode.ProgressLocation.Notification, title: "Barretta: Pull" },
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: l("progress.pull"),
+    },
     async (progress) => {
       progress.report({ message: "Working...." });
 
-      const ps1FilePath = path.join(rootPath, "barretta-core/scripts/pull_modules.ps1");
+      const ps1FilePath = path.join(
+        rootPath,
+        "barretta-core/scripts/pull_modules.ps1",
+      );
 
       try {
-        // Generate push_modules.ps1
-        const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("pull");
-        const pullIgnoreDocument: boolean = config.get("ignoreDocuments") ?? false;
+        // Generate pull_modules.ps1
+        const config: vscode.WorkspaceConfiguration =
+          vscode.workspace.getConfiguration("barretta");
+        const pullIgnoreDocument: boolean =
+          config.get("pull.ignoreDocuments") ?? false;
 
         const genParams = {
           rootPath,
@@ -214,66 +277,92 @@ export const pullExcel: PullExcel = async () => {
           pullIgnoreDocument,
         };
         fs.appendFileSync(ps1FilePath, gen.generatePullPs1(genParams));
-        console.log("Barretta: pull_modules.ps1 Created.");
+        // console.log("Barretta: pull_modules.ps1 Created.");
+        log(`Barretta: pull_modules.ps1 Created.`);
 
-        // ps1ファイルをShift-JISに変換
+        // ps1 file encoding conversion (using custom encoding setting)
         const txtData: Buffer = fs.readFileSync(ps1FilePath);
-        const buf: Buffer = iconv.encode(String(txtData), "CP932");
+        const buf: Buffer = iconv.encode(String(txtData), targetEncoding);
         fs.writeFileSync(ps1FilePath, buf);
-        console.log(`Barretta: pull_modules.ps1 encoding to Shift-JIS.`);
+        // console.log(`Barretta: pull_modules.ps1 encoding to ${vbaEncoding}.`);
+        log(`Barretta: pull_modules.ps1 encoding to ${vbaEncoding}.`);
 
-        // pull_modules.ps1 を実行する
+        // pull_modules.ps1
         const ps1Params: Ps1Params = {
           execType: "-File",
           ps1FilePath,
         };
 
         if (await runPs1(ps1Params)) {
-          const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("pull");
+          const config: vscode.WorkspaceConfiguration =
+            vscode.workspace.getConfiguration("barretta");
 
-          if (config.get("encodingToUtf8")) {
+          if (config.get("barretta.pull.encodingToUtf8")) {
             const modulePath = path.join(rootPath, "code_modules");
             fs.readdirSync(modulePath).map((file) => {
               if (path.extname(file) !== ".frx") {
-                const txtData: Buffer = fs.readFileSync(path.join(modulePath, file));
-                const buf: string = iconv.decode(txtData, "Shift-JIS");
+                const txtData: Buffer = fs.readFileSync(
+                  path.join(modulePath, file),
+                );
+
+                // decode the file: using custom encoding setting
+                const buf: string = iconv.decode(txtData, targetEncoding);
                 fs.writeFileSync(path.join(modulePath, file), buf);
-                console.log(`Barretta: ${file} encoding to UTF-8.`);
+                // console.log(`Barretta: ${file} encoding to UTF-8.`);
+                log(`Barretta: ${file} encoding to UTF-8.`);
               }
             });
           }
 
-          vscode.window.showInformationMessage("Barretta: code_modulesフォルダにExportしました。");
-          console.log(`Barretta: Complete pullExcel.`);
+          vscode.window.showInformationMessage(
+            `Barretta: ${l("pull.complete")}`,
+          );
+          // console.log(`Barretta: Complete pullExcel.`);
+          log(`Barretta: Complete pullExcel.`);
         } else {
-          vscode.window.showErrorMessage("Barretta: コードモジュールのExportが失敗しました。");
-          console.log(`Barretta: Failed  pullExcel.`);
+          vscode.window.showErrorMessage(`Barretta: ${l("pull.failed")}`);
+          // console.log(`Barretta: Failed  pullExcel.`);
+          log(`Barretta: Failed  pullExcel.`);
         }
       } catch (e) {
-        console.error(`Barretta: unknown error has occured.`);
-        console.error(e);
+        // console.error(`Barretta: unknown error has occured.`);
+        // console.error(e);
+        log(`Barretta: unknown error has occured.`);
+        log(String(e));
       } finally {
         fs.unlinkSync(ps1FilePath);
-        console.log(`Barretta: pull_modules.ps1 deleted.`);
+        // console.log(`Barretta: pull_modules.ps1 deleted.`);
+        log(`Barretta: pull_modules.ps1 deleted.`);
       }
     },
   );
 };
 
 export const openBook: OpenBook = async () => {
-  console.log(`Barretta: Start openBook.`);
+  log(`Barretta: Start openBook.`);
 
   const rootPath: string | undefined = await setRootPath();
-
   if (rootPath === undefined) {
-    console.log(`Barretta: Exit openBook.`);
+    // console.log(`Barretta: Exit openBook.`);
+    log(`Barretta: Exit openBook.`);
+    return;
+  }
+  if (!preCheckOpen(rootPath)) {
+    // console.log(`Barretta: Failed preCheckOpen.`);
+    log(`Barretta: Failed preCheckOpen.`);
     return;
   }
 
-  if (!preCheckOpen(rootPath)) {
-    console.log(`Barretta: Failed preCheckOpen.`);
-    return;
-  }
+  // read encoding setting (following encoding / decoding settings based on user settings --> encodingMap)
+  const config: vscode.WorkspaceConfiguration =
+    vscode.workspace.getConfiguration("barretta");
+  const vbaEncoding: string = config.get("vbaEncoding") || "Shift-JIS";
+  const encodingMap: Record<string, string> = {
+    "Shift-JIS": "CP932",
+    "GB2312": "GB2312",
+    "ANSI": "win1252",
+  };
+  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -282,11 +371,17 @@ export const openBook: OpenBook = async () => {
   const fileName: string = excelFileList[0];
 
   vscode.window.withProgress(
-    { location: vscode.ProgressLocation.Notification, title: "Barretta: Open" },
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: l("progress.open"),
+    },
     async (progress) => {
       progress.report({ message: "Working...." });
 
-      const ps1FilePath = path.join(rootPath, "barretta-core/scripts/open_excelbook.ps1");
+      const ps1FilePath = path.join(
+        rootPath,
+        "barretta-core/scripts/open_excelbook.ps1",
+      );
 
       try {
         // Generate open_excelbook.ps1
@@ -295,53 +390,72 @@ export const openBook: OpenBook = async () => {
           fileName,
         };
         fs.appendFileSync(ps1FilePath, gen.generateOpenBookPs1(genParams));
-        console.log("Barretta: open_excelbook.ps1 Created.");
+        // console.log("Barretta: open_excelbook.ps1 Created.");
+        log(`Barretta: open_excelbook.ps1 Created.`);
 
-        // ps1ファイルをShift-JISに変換
+        // ps1文件编码转换
+        // PS1 file encoding conversion (using custom encoding setting)
         const txtData: Buffer = fs.readFileSync(ps1FilePath);
-
-        const buf: Buffer = iconv.encode(String(txtData), "CP932");
+        const buf: Buffer = iconv.encode(String(txtData), targetEncoding);
         fs.writeFileSync(ps1FilePath, buf);
-        console.log(`Barretta: open_excelbook.ps1 encoding to Shift-JIS.`);
+        // console.log(`Barretta: open_excelbook.ps1 encoding to ${vbaEncoding}.`);
+        log(`Barretta: open_excelbook.ps1 encoding to ${vbaEncoding}.`);
 
-        // open_excelbook.ps1 を実行する
+        // open_excelbook.ps1
         const ps1Params: Ps1Params = {
           execType: "-File",
           ps1FilePath,
         };
 
         if (await runPs1(ps1Params)) {
-          vscode.window.showInformationMessage("Barretta: Excelブックを開きました。");
-          console.log(`Barretta: Complete openBook.`);
+          vscode.window.showInformationMessage(
+            `Barretta: ${l("open.complete")}`,
+          );
+          // console.log(`Barretta: Complete openBook.`);
+          log(`Barretta: Complete openBook.`);
         } else {
-          vscode.window.showErrorMessage("Barretta: Excelブックを開けませんでした。");
-          console.log(`Barretta: Failed openBook.`);
+          vscode.window.showErrorMessage(`Barretta: ${l("open.failed")}`);
+          // console.log(`Barretta: Failed openBook.`);
+          log(`Barretta: Failed openBook.`);
         }
       } catch (e) {
-        console.error(`Barretta: unknown error has occured.`);
-        console.error(e);
+        // console.error(`Barretta: unknown error has occured.`);
+        // console.error(e);
+        log(`Barretta: unknown error has occured.`);
+        log(String(e));
       } finally {
         fs.unlinkSync(ps1FilePath);
-        console.log(`Barretta: open_excelbook.ps1 deleted.`);
+        // console.log(`Barretta: open_excelbook.ps1 deleted.`);
+        log(`Barretta: open_excelbook.ps1 deleted.`);
       }
     },
   );
 };
 
 export const callMacro: CallMacro = async (callMethod, methodParams?) => {
-  console.log(`Barretta: Start callMacro.`);
+  log(`Barretta: Start callMacro.`);
 
   const rootPath: string | undefined = await setRootPath();
-
   if (rootPath === undefined) {
-    console.log(`Barretta: Exit callMacro.`);
+    // console.log(`Barretta: Exit callMacro.`);
+    log(`Barretta: Exit callMacro.`);
+    return;
+  }
+  if (!preCheckCallMacro(rootPath)) {
+    // console.log(`Barretta: Failed callMacro.`);
+    log(`Barretta: Failed callMacro.`);
     return;
   }
 
-  if (!preCheckCallMacro(rootPath)) {
-    console.log(`Barretta: Failed callMacro.`);
-    return;
-  }
+  // Read encoding settings (following encoding / decoding settings based on user settings --> encodingMap)
+  const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("barretta");
+  const vbaEncoding: string = config.get("vbaEncoding") || "Shift-JIS";
+  const encodingMap: Record<string, string> = {
+    "Shift-JIS": "CP932",
+    "GB2312": "GB2312",
+    "ANSI": "win1252"
+  };
+  const targetEncoding = encodingMap[vbaEncoding] || "CP932";
 
   const fileList: string[] = fs.readdirSync(path.join(rootPath, "excel_file"));
   const excelFileList: string[] = fileList.filter((fileName) =>
@@ -357,59 +471,69 @@ export const callMacro: CallMacro = async (callMethod, methodParams?) => {
     methodParams,
   };
   fs.appendFileSync(path.join(rootPath, "barretta-core/scripts/run_macro.ps1"), gen.generateRunMacroPs1(genParams));
-  console.log("Barretta: run_macro.ps1 Created.");
+  // console.log("Barretta: run_macro.ps1 Created.");
+  log(`Barretta: run_macro.ps1 Created.`);
 
   vscode.window.withProgress(
-    { location: vscode.ProgressLocation.Notification, title: "Barretta: LaunchMacro" },
+    { location: vscode.ProgressLocation.Notification, title: l("progress.launchMacro") },
     async (progress) => {
       progress.report({ message: "Working...." });
       try {
         const ps1FilePath = path.join(rootPath, "barretta-core/scripts/run_macro.ps1");
 
-        // ps1ファイルをShift-JISに変換
+        // ps1文件编码转换
+        // ps1 file encoding conversion (using custom encoding setting)
         const txtData: Buffer = fs.readFileSync(ps1FilePath);
-        const buf: Buffer = iconv.encode(String(txtData), "CP932");
+        const buf: Buffer = iconv.encode(String(txtData), targetEncoding);
         fs.writeFileSync(ps1FilePath, buf);
-        console.log(`Barretta: run_macro.ps1 encoding to Shift-JIS.`);
+        // console.log(`Barretta: run_macro.ps1 encoding to ${vbaEncoding}.`);
+        log(`Barretta: run_macro.ps1 encoding to ${vbaEncoding}.`);
 
-        // pull_modules.ps1 を実行する
+        // pull_modules.ps1
         const ps1Params: Ps1Params = {
           execType: "-File",
           ps1FilePath,
         };
 
         if (await runPs1(ps1Params)) {
-          vscode.window.showInformationMessage("Barretta: マクロの実行が完了しました。");
-          console.log(`Barretta: run_macro.ps1 completed.`);
+          vscode.window.showInformationMessage(`Barretta: ${l("macro.complete")}`);
+          // console.log(`Barretta: run_macro.ps1 completed.`);
+          log(`Barretta: run_macro.ps1 completed.`);
         } else {
-          vscode.window.showErrorMessage("Barretta: マクロの実行が失敗しました。");
-          console.log(`Barretta: run_macro.ps1 failed.`);
+          vscode.window.showErrorMessage(`Barretta: ${l("macro.failed")}`);
+          // console.log(`Barretta: run_macro.ps1 failed.`);
+          log(`Barretta: run_macro.ps1 failed.`);
         }
       } catch (e) {
-        console.error(`Barretta: unknown error has occured.`);
-        console.error(e);
+        // console.error(`Barretta: unknown error has occured.`);
+        // console.error(e);
+        log(`Barretta: unknown error has occured.`);
+        log(String(e));
       } finally {
         fs.unlinkSync(path.join(rootPath, "barretta-core/scripts/run_macro.ps1"));
-        console.log(`Barretta: run_macro.ps1 deleted.`);
+        // console.log(`Barretta: run_macro.ps1 deleted.`);
+        log(`Barretta: run_macro.ps1 deleted.`);
       }
     },
   );
 };
 
 const runPs1: RunPS1 = async (ps1Params): Promise<boolean> => {
-  console.log(`runPs1 : start`);
+  log(`runPs1 : start`);
 
   const child = spawn("powershell.exe", ["-ExecutionPolicy", "Bypass", ps1Params.execType, ps1Params.ps1FilePath]);
 
   let _info = "";
   for await (const chunk of child.stdout) {
-    console.log(`Powershell Info: ${chunk}`);
+    // console.log(`Powershell Info: ${chunk}`);
+    log(`Powershell Info: ${chunk}`);
     _info += chunk;
   }
 
   let error = "";
   for await (const chunk of child.stderr) {
-    console.log(`Powershell Errors: ${chunk}`);
+    // console.log(`Powershell Errors: ${chunk}`);
+    log(`Powershell Errors: ${chunk}`);
     error += chunk;
   }
 
@@ -419,9 +543,11 @@ const runPs1: RunPS1 = async (ps1Params): Promise<boolean> => {
 
   if (exitCode) {
     const result = `SubProcess Error Exit ${exitCode}, ${error}`;
-    console.log(`runPs1 : error-end ${result}`);
+    // console.log(`runPs1 : error-end ${result}`);
+    log(`runPs1 : error-end ${result}`);
     throw new Error(result);
   }
 
   return error === "";
 };
+
